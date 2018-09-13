@@ -84,6 +84,9 @@ def label2name(digitalStr):
 def text2vec(text):
     text_len = len(text)
     if text_len > MAX_CAPTCHA:
+        print text
+        print len(text)
+        print MAX_CAPTCHA
         raise ValueError('验证码最长4个字符')
     vector = np.zeros(MAX_CAPTCHA * CHAR_SET_LEN)
     def char2pos(c):
@@ -130,8 +133,8 @@ def get_next_batch(imageFilePath, image_filename_list= None,batch_size=128):
  
     def wrap_gen_captcha_text_and_image(imageFilePath):
         while True:
-            #text, image = gen_captcha_text_and_image(imageFilePath,image_filename_list)
-            text, image = gen_captcha_text_and_image_r()
+            text, image = gen_captcha_text_and_image(imageFilePath,image_filename_list)
+            #text, image = gen_captcha_text_and_image_r()
             image=convert2gray(image)
             #print image.shape
             if image.shape == (IMAGE_HEIGHT, IMAGE_WIDTH):
@@ -261,7 +264,7 @@ def train_crack_captcha_cnn():
                 print(step, acc)
  
                 # 训练结束条件
-                if acc > 0.9 or step >= 5900:
+                if acc > 0.6 or step >= 5900:
                     saver.save(sess, "./crack_capcha.model", global_step=step)
                     break
             step += 1
@@ -288,7 +291,7 @@ def predict_captcha(captcha_image):
 
 # 测试
 def test():
-		image = cv2.imread(trainImagePath+'/5677.jpg', 0)
+		image = cv2.imread(trainImagePath+'/0506.jpg', 0)
 		image = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT) )
 		image = np.float32(image)
 		image = image.flatten() / 255
@@ -296,6 +299,6 @@ def test():
 		print predict_text
 
 # 执行训练
-train_crack_captcha_cnn()
-#test()
+#train_crack_captcha_cnn()
+test()
 

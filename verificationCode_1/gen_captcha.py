@@ -15,7 +15,7 @@ ALPHABET = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q',
 IMAGE_HEIGHT = 60  #80
 IMAGE_WIDTH = 160  #250
 MAX_CAPTCHA = 4
-trainImagePath='./trainImage'
+trainImagePath='./trainImage/test'
  
 # 验证码长度为4个字符
 def random_captcha_text(char_set=number, captcha_size=MAX_CAPTCHA):
