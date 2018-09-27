@@ -40,12 +40,12 @@ def func1():
     for i in range(10):
         text, image = gen_captcha_text_and_image_r()
         fullPath = os.path.join(trainImagePath, text + ".jpg")
-	print fullPath
+        print(fullPath)
         #cv2.imwrite(fullPath, image, [int(cv2.IMWRITE_JPEG_QUALITY),9])
         image=cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT) )
         cv2.imwrite(fullPath, image )
         #print "{0}/10000".format(i)
-    print "/nDone!"
+    print("/nDone!")
  
 if __name__ == '__main__':
 	func1()

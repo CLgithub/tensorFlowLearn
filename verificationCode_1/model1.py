@@ -84,9 +84,9 @@ def label2name(digitalStr):
 def text2vec(text):
     text_len = len(text)
     if text_len > MAX_CAPTCHA:
-        print text
-        print len(text)
-        print MAX_CAPTCHA
+        print(text)
+        print(len(text))
+        print(MAX_CAPTCHA)
         raise ValueError('验证码最长4个字符')
     vector = np.zeros(MAX_CAPTCHA * CHAR_SET_LEN)
     def char2pos(c):
@@ -291,12 +291,12 @@ def predict_captcha(captcha_image):
 
 # 测试
 def test():
-		image = cv2.imread(trainImagePath+'/0506.jpg', 0)
+		image = cv2.imread(trainImagePath+'/CheckCode1', 0)
 		image = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT) )
 		image = np.float32(image)
 		image = image.flatten() / 255
 		predict_text = predict_captcha(image)
-		print predict_text
+		print(predict_text)
 
 # 执行训练
 #train_crack_captcha_cnn()
