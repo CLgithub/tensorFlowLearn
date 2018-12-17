@@ -6,16 +6,14 @@ import os
 import random
 import time
 
-from gen_captcha import number
+from gen_captcha import char_set
 from gen_captcha import IMAGE_HEIGHT
 from gen_captcha import IMAGE_WIDTH
 from gen_captcha import MAX_CAPTCHA
 from gen_captcha import trainImagePath
 from gen_captcha import gen_captcha_text_and_image_r
  
-
  
-char_set = number
 CHAR_SET_LEN = len(char_set)  #
  
 image_filename_list = []
@@ -93,14 +91,15 @@ def text2vec(text):
         if c == '_':
             k = 62
             return k
-        k = ord(c) - 48
-        if k > 9:
-            k = ord(c) - 55
-            if k > 35:
-                k = ord(c) - 61
+        k = ord(c) - 48 #如果ascii<57(字符9),返回会ascii-48，数字直接得到数字
+        if k > 9:       #如果ascii>57(字符9)
+            k = ord(c) - 55 #并且ascii<90(Z以前)，返回ascii-55，得到字母是第几个字符
+            if k > 35:      #如果在Z以后
+                k = ord(c) - 61 #并且z以前,返回ascii-61，得到字母是第几个字符
                 if k > 61:
                     raise ValueError('No Map')
         return k
+
     for i, c in enumerate(text):
         idx = i * CHAR_SET_LEN + char2pos(c)
         vector[idx] = 1
@@ -261,10 +260,10 @@ def train_crack_captcha_cnn():
             if step % 100 == 0:
                 batch_x_test, batch_y_test = get_next_batch(trainImagePath,image_filename_list, 128)
                 acc = sess.run(accuracy, feed_dict={X: batch_x_test, Y: batch_y_test, keep_prob: 1.})
-                print(step, acc)
+                print(step, acc, '---')
  
                 # 训练结束条件
-                if acc > 0.6 or step >= 5900:
+                if acc > 0.8 or step >= 5900:
                     saver.save(sess, "./crack_capcha.model", global_step=step)
                     break
             step += 1
@@ -291,14 +290,14 @@ def predict_captcha(captcha_image):
 
 # 测试
 def test():
-		image = cv2.imread(trainImagePath+'/CheckCode1', 0)
-		image = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT) )
-		image = np.float32(image)
-		image = image.flatten() / 255
-		predict_text = predict_captcha(image)
-		print(predict_text)
+    image = cv2.imread(trainImagePath+'/validateCode.jpg', 0)
+    image = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT) )
+    image = np.float32(image)
+    image = image.flatten() / 255
+    predict_text = predict_captcha(image)
+    print(predict_text)
 
 # 执行训练
-#train_crack_captcha_cnn()
-test()
+train_crack_captcha_cnn()
+#test()
 

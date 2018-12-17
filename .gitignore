@@ -56,3 +56,6 @@ Temporary Items
 
 # ml
 crack_*
+
+# python
+*.pyc
