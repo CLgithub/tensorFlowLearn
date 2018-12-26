@@ -59,3 +59,4 @@ crack_*
 
 # python
 *.pyc
+MNIST_data/

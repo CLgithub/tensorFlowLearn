@@ -19,18 +19,19 @@ y_ = tf.placeholder("float", [None,10]) #y_表示正确的概率
 cross_entropy = -tf.reduce_sum(y_*tf.log(y))    #计算正确答案与输出答案至今的差距
 # 反向传播，修改w，b，使误差最小化
 train_step = tf.train.GradientDescentOptimizer(0.01).minimize(cross_entropy) #gradient descent algorithm 随机梯度下降
+#train_step = tf.train.GradientDescentOptimizer(0.01).minimize(-tf.reduce_sum( y_*tf.log(tf.nn.softmax(tf.matmul( x ,tf.Variable(tf.zeros([784,10])))+tf.Variable(tf.zeros([10]))))))
 
 # 准备开始训练
 init = tf.initialize_all_variables()    #先初始化
 sess=tf.Session()
 sess.run(init)
 # 开始训练
-for i in range(1000):
+for i in range(1):
     batch_xs, batch_ys=mnist.train.next_batch(100) #每次循环，随机抓取训练数据中的100个批处理数据点，然后我们用这些数据点作为参数替换之前的占位符来运行train_step
     sess.run(train_step, feed_dict={x: batch_xs, y_: batch_ys})
-
-# 评估模型
+    # 评估模型
 correct_prediction = tf.equal(tf.argmax(y,1), tf.argmax(y_,1)) #比较y与正确答案是否相等
-#我们可以把布尔值转换成浮点数，然后取平均值。例如，[True, False, True, True] 会变成 [1,0,1,1] ，取平均值后得到 0.75
+#correct_prediction = tf.equal(y, y_) #比较y与正确答案是否相等
+    #我们可以把布尔值转换成浮点数，然后取平均值。例如，[True, False, True, True] 会变成 [1,0,1,1] ，取平均值后得到 0.75
 accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
 print(sess.run(accuracy, feed_dict={x: mnist.test.images, y_: mnist.test.labels}))
