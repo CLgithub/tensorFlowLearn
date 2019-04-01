@@ -14,6 +14,7 @@ import os
 #导入数据集
 fashion_mnist = keras.datasets.fashion_mnist
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
+print(train_labels)
 # 各种服饰标签
 class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
 #class_names = ['T恤衫', '裤子', '套头毛衣', '连衣裙', '外套', '凉鞋', '衬衫', '运动鞋', '包包', '踝靴']
@@ -113,8 +114,8 @@ def test1(i):
     predictions = model.predict(test_images)    #对测试集进行预测试
     print(predictions[i])
     print(np.argmax(predictions[i]))
-    print('预测：'+class_names_zh[np.argmax(predictions[i])])
-    print('正确：'+class_names_zh[ test_labels[i] ])
+    print('预测：'+class_names[np.argmax(predictions[i])])
+    print('正确：'+class_names[ test_labels[i] ])
     plt.figure()
     plt.imshow(test_images[i])
     plt.colorbar()
@@ -145,7 +146,7 @@ def test3():
         plot_value_array(i, predictions, test_labels)
     plt.show()
 
-#learn2(cp_callback_2,15)   #学习并将学习到的权重保存到checkpoint_path中
-model.load_weights('training_2/cp-0015.ckpt') #model加载检查点的权重
+learn1(cp_callback,5)   #学习并将学习到的权重保存到checkpoint_path中
+#model.load_weights('training_2/cp-0015.ckpt') #model加载检查点的权重
 #test2(5,model) #测试训练成果
-test3()
+test1(0)

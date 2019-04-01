@@ -29,12 +29,12 @@ def add_layer(inputs, in_d, out_d, activation_function=None):
         outputs = activation_function(wx_plus_b)
     return outputs
 
-d=1
+d=2
 #导入数据
 #x_data = np.linspace(-1, 1, 30, dtype=np.float32)[:, np.newaxis] #-1~1之间取300个点，然后变成竖直方向上的矩阵
-x_data = np.linspace(-1, 1, 100, dtype=np.float32).reshape(100,d)
+x_data = np.linspace(-1, 1, 200, dtype=np.float32).reshape(100,d)
 #x_data = np.random.normal(-10, 1, (4,1)).astype(np.float32)
-print(x_data)
+#print(x_data)
 noise = np.random.normal(0, 0.05, x_data.shape).astype(np.float32)
 y_data = np.square(x_data) - 0.5 + noise #square 计算各元素的平方
 
@@ -54,8 +54,8 @@ sess.run(init)
 
 #数据可视化
 fig=plt.figure() #创建一个图像实例
-ax = fig.add_subplot(2,1,1) #设置布局
-bx = fig.add_subplot(2,1,2)
+ax = fig.add_subplot(1,1,1) #设置布局
+#bx = fig.add_subplot(2,1,2)
 ax.scatter(x_data, y_data)
 #ax.plot(x_data, y_data) #滑线
 plt.ion() #打开交互模式
@@ -70,13 +70,15 @@ for i in range(1000):
                 ax.lines.remove(l)  #删除原来的线
         except Exception:
             pass
-        loss_values=sess.run(loss, feed_dict={xs: x_data, ys: y_data})
+        #loss_values=sess.run(loss, feed_dict={xs: x_data, ys: y_data})
         prediction_value = sess.run(prediction, feed_dict={xs: x_data})
-        ilist.append(i)
-        losslist.append(loss_values)
+        #ilist.append(i)
+        #losslist.append(loss_values)
 
         lines = ax.plot(x_data, prediction_value, 'r-', lw=1)
+        '''
         #bx.scatter(ilist,losslist)
         bx.plot(ilist,losslist)
+        '''
         plt.pause(0.1) #每帧动画时间
 plt.show()
