@@ -17,8 +17,8 @@ char_set=number+ALPHABET
 IMAGE_HEIGHT = 60  #80
 IMAGE_WIDTH = 160  #250
 MAX_CAPTCHA = 4
-trainImagePath='/Users/l/develop/clProject/tensorFlowLearn/verificationCode_1/trainImage/vcode/1-700'
-#trainImagePath='/Users/l/develop/clProject/tensorFlowLearn/verificationCode_1/trainImage/webview'
+#trainImagePath='/Users/l/develop/clProject/tensorFlowLearn/verificationCode_1/trainImage/vcode/1-700'
+trainImagePath='/Users/l/develop/clProject/tensorFlowLearn/verificationCode_1/trainImage/GzEyeNetIndexIm'
  
 # 验证码长度为4个字符
 def random_captcha_text(char_set=char_set, captcha_size=MAX_CAPTCHA):

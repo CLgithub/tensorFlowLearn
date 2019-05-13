@@ -290,7 +290,7 @@ def predict_captcha(captcha_image):
 
 # 测试
 def test():
-    image = cv2.imread(trainImagePath+'/validateCode.jpg', 0)
+    image = cv2.imread(trainImagePath+'/CheckCode', 0)
     image = cv2.resize(image, (IMAGE_WIDTH, IMAGE_HEIGHT) )
     image = np.float32(image)
     image = image.flatten() / 255
@@ -298,6 +298,6 @@ def test():
     print(predict_text)
 
 # 执行训练
-train_crack_captcha_cnn()
-#test()
+#train_crack_captcha_cnn()
+test()
 
