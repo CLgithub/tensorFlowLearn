@@ -7,4 +7,5 @@
     AdaGrad #相当于阻止走弯路
     RMSProp #以上两种结合
     Adam    #以上两种更好的结合
+详细见：https://morvanzhou.github.io/tutorials/machine-learning/tensorflow/3-4-A-speed-up-learning/
 '''
