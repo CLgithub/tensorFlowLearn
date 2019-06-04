@@ -92,7 +92,7 @@ def mycnn():
     prediction=tf.add(tf.matmul(h_fc1_dropt,w_fc2),b_fc2)
     return xs,ys,prediction
 
-xs,ys,prediction=cnn1()
+xs,ys,prediction=mycnn()
 
 cross_entropy=tf.reduce_mean( -tf.reduce_sum(ys*tf.log(prediction), reduction_indices=[1]))
 train_step=tf.train.AdamOptimizer(1e-4).minimize(cross_entropy)
@@ -128,14 +128,14 @@ batch_xs,batch_ys=mnist.train.next_batch(1)
 '''
 
 for i in range(1000):
-    #batch_xs, batch_ys=getInput(100)
-    batch_xs, batch_ys = mnist.train.next_batch(100)
+    batch_xs, batch_ys=getInput(100)
+    #batch_xs, batch_ys = mnist.train.next_batch(100)
     sess.run(train_step, feed_dict={xs: batch_xs, ys:batch_ys, keep_prob:0.5})
     if i%50==0:
         #print(compute_accuracy(mnist.test.images[:1000], mnist.test.labels[:1000]))
-        v_xs=mnist.test.images[:1000]
-        v_ys=mnist.test.labels[:1000]
-        #v_xs, v_ys=getInput(100)
+        #v_xs=mnist.test.images[:1000]
+        #v_ys=mnist.test.labels[:1000]
+        v_xs, v_ys=getInput(100)
         y_pre = sess.run(prediction, feed_dict={xs: v_xs, keep_prob: 1})
         correct_prediction = tf.equal(tf.argmax(y_pre,1), tf.argmax(v_ys,1))
         accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
