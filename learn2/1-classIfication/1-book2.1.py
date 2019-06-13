@@ -18,7 +18,7 @@ from keras.utils import to_categorical
 
 #设置神经网络
 network=models.Sequential()
-network.add(layers.Dense( 512, activation='relu', input_shape=(28*28,) )) #添加一个全连接层，512个神经元
+network.add(layers.Dense( 128, activation='relu', input_shape=(28*28,) )) #添加一个全连接层，512个神经元
 network.add(layers.Dense( 10 ,activation='softmax' ))
 
 #编译神经网络
