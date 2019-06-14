@@ -51,6 +51,7 @@ merged=tf.summary.merge_all()
 writer=tf.summary.FileWriter('logs/', sess.graph)
 sess.run(tf.global_variables_initializer())
 
+#计算准确率
 def compute_accuracy(v_xs, v_ys):
     #global prediction
     y_pre = sess.run(prediction, feed_dict={xs: v_xs})

@@ -9,6 +9,13 @@ Deep Learning with Python 2.2 神经网络的数据表示
         1维度的张量---向量  [12,21,3,4,16]
         2维度的张量---矩阵  [[12,21,3,4,16],
                             [12,21,3,4,16]]
+        3维度的张量---立方体[[[12,21,3,4,16],
+                              [12,21,3,4,16]],
+                             [[12,21,3,4,16],
+                              [12,21,3,4,16]],
+                             [[12,21,3,4,16],
+                              [12,21,3,4,16]]]
+                    shape=(3,2,5)
 
     形状(shape)，这是一个整数元祖，表示张量沿每个轴的维度大小(元素个数),
         先看方括号确定元祖元素个数，然后从大的开始拆解填入
@@ -19,6 +26,7 @@ Deep Learning with Python 2.2 神经网络的数据表示
 #from keras.datasets import fashion_mnist as mnist
 from keras.datasets import mnist as mnist
 import matplotlib.pyplot as plt
+import numpy as np
 
 (train_images,train_labels),(test_images,test_labels)=mnist.load_data()
 
@@ -29,3 +37,14 @@ print(train_images.dtype)
 #plt.imshow(train_images[4], cmap=plt.cm.binary)
 plt.imshow(train_images[5])
 plt.show()
+
+tensor3d=np.array([[[12,21,3,4,16],
+                    [12,21,3,4,16]],
+                   [[12,21,3,4,16],
+                    [12,21,3,4,16]],
+                   [[12,21,3,4,16],
+                    [12,21,3,4,16]]]
+)
+
+print(tensor3d.shape)
+
