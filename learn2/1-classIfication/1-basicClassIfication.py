@@ -57,16 +57,75 @@ def createModel():
 
 #训练模型
 def learn1(model):
-    model.fit(train_images, train_labels, epochs=5)
+    model.fit(train_images, train_labels, epochs=1)
     return model
 
+def plot_image(i, predictions_array, lables, images):
+    predictions_array, lable, img=predictions_array[i], lables[i], images[i]
+    plt.grid(False)
+    plt.xticks([])
+    plt.yticks([])
+    plt.imshow(img,cmap=plt.cm.binary) #cmap=plt.cm.binary显示图片，以灰度图显示
+    predicted_label=np.argmax(predictions_array)    #获取到各个可能性
+    if predicted_label==lable:
+        color='red'
+    else:
+        color='blue'
+    plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label], 
+        100*np.max(predictions_array), 
+        class_names[lable]), 
+        color=color)
 
-model=createModel()
-model=learn1(model)
+def plot_value_array(i, predictions_array, layers):
+    predictions_array, lable=predictions_array[i], layers[i]
+    plt.grid(False)
+    plt.xticks([])
+    plt.yticks([])
+    thisplot=plt.bar(range(10), predictions_array, color="#777777")
+    plt.ylim([0,1])
+    predicted_label=np.argmax(predictions_array)
+    thisplot[predicted_label].set_color('blue')
+    thisplot[lable].set_color('red')
+
+def getPre():
+    #创建模型
+    model=createModel()
+    #训练模型
+    model=learn1(model)
+    #评估模型
+    predictions=model.predict(test_images)
+    return predictions
 '''
+print('-------------')
+#评估模型
 test_loss,test_acc=model.evaluate(test_images, test_labels)
-print(test_acc)
-'''
 
+#做出预测
 predictions=model.predict(test_images)
 print(class_names[np.argmax(predictions[1])])
+'''
+
+def test1(i,predictions):
+    plt.figure(figsize=(6,3))   #开一个小窗
+    plt.subplot(1,2,1)  
+    plot_image(i, predictions, test_labels, test_images)
+    plt.subplot(1,2,2)
+    plot_value_array(i, predictions, test_labels)
+    plt.show()
+
+def test2(predictions):
+    num_rows=5  #5行
+    num_cols=3
+    num_images=num_rows*num_cols
+    plt.figure(figsize=(2*2*num_cols, 2*num_rows))  #开一个小窗
+    for i in range(num_images):
+        plt.subplot(num_rows, 2*num_cols, 2*i+1)
+        plot_image(i, predictions, test_labels, test_images)
+        plt.subplot(num_rows, 2*num_cols, 2*i+2)
+        plot_value_array(i, predictions, test_labels)
+    plt.show()
+
+predictions=getPre()
+test1(0,predictions)
+#test2(predictions)
+
