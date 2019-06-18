@@ -49,9 +49,8 @@ tensor3d=np.array([[[12,21,3,4,16],
 )
 
 print(tensor3d.shape)
-
-'''------------------------------
-2.2.6   在numpy中操作张量
+print('------------------------------ 2.2.6   在numpy中操作张量')
+'''------------------------------ 2.2.6   在numpy中操作张量
 张量切片：选择张量的特定元素
 给出了切片沿着每个张量轴的起始索引和结束索引
 :等同于选择整个轴
@@ -72,4 +71,14 @@ plt.imshow(my_slice[3])
 my_slice=train_images[:,7:-7,7:-7]
 print(my_slice.shape)
 plt.imshow(my_slice[3])
-plt.show()
+#plt.show()
+print('------------------------------ 2.2.8   现实世界中的数据张量')
+'''------------------------------ 2.2.8   现实世界中的数据张量
+向量数据：2D张量(矩阵)，shape=(samples, features)   (样本,特征)
+时间序列数据或时间数据：3D张量，shape=(samples, timesteps, features)(样本,时间序列,特征)
+图像：4D张量,shape=(samples,height,width,channels)(tensorflow约定)，shape=(samples,channels,height,width)(theano约定)
+    入mist数据，shape=(60000,28,28,1)灰度图，颜色通道为1,是否可以省略以后探究
+视频：5D张量，shape=(samples,frames,height,width,channels)
+    此处frames可理解为帧，时间维度
+    多个视频，多个样本samples
+'''
