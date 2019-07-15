@@ -47,11 +47,35 @@ arr1=np.array([(3,5),(6,3,2,1),(1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1)])
 aa=vectorize_sequences(arr1)
 print(aa)
 '''
+
+yp1="very different people fall in love they decide to move in together alot of things go wrong happy ending they get married do it really take more than an hour to tell this story the meaningless plot reminds me of those great 80s movies the movie doesn't contain any of those funny 80s scenes even makes you laugh at all i like happy ending movies but this is just another happy ending story nothing more to say" # 两个非常不同的人坠入爱河，他们决定一起搬进去，很多事情都出错了，结局很开心：他们结婚了。真的需要花一个多小时来讲述这个故事吗？无意义的情节让我想起那些伟大的80年代电影。唯一不同的是：这部电影不包含任何有趣的80年代场景，它甚至不会让你发笑。我喜欢快乐结束的电影，但这只是另一个快乐的结局故事。没有更多的话要说。#这是一个负面评价
+yp2="i strongly recommend the film and very recommend this" # 按理说应该是正面评价，但测试结果取0.4
+
+yp1_num=[]
+for w in yp1.split(' '):
+    yp1_num.append(word_index[w])
+yp2_num=[]
+for w in yp2.split(' '):
+    yp2_num.append(word_index[w])
+
+yall=[]
+yall.append(yp1_num)
+yall.append(yp2_num)
+
+test_data=np.array(yall)
+
+print(test_data.shape)
+#print(test_data[0])
+#print(yall.shape)
+#print(yall[0].shape)
+
+
 #数据处理
 x_train=vectorize_sequences(train_data)
 x_test=vectorize_sequences(test_data)
 y_train=np.asarray(train_labels).astype('float32')
 y_test=np.asarray(test_labels).astype('float32')
+
 
 x_val=x_train[:10000]   # 预留10000个做验证集
 partial_x_train=x_train[10000:]
@@ -74,21 +98,21 @@ model.compile(
 history=model.fit(
     partial_x_train,
     partial_y_train,
-    epochs=20,
+    epochs=5,
     batch_size=512,
     validation_data=(x_val,y_val)
 )
 
 #用测试集来评测模型的准确率
-results=model.evaluate(x_test,y_test)
-print(results)
+#results=model.evaluate(x_test,y_test)
+#print(results)
 
 #用训练好的模型来评判测试集
 arr1=model.predict(x_test)
 print(arr1)
 #print(test_data[1])
 p=[]
-for i in test_data[1]:
+for i in test_data[0]:
     p.append(reverse_word_index[i])
 #print(p)
 
