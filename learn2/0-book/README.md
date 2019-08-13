@@ -16,3 +16,13 @@
 	* 通过分类编码（也叫one-hot编码）对标签进行编码，然后使用categorical\_crossentropy作为损失函数。
 	* 将标签编码为整数，然后使用sparse\_categorical\_crossentropy损失函数。
 * 如果你需要将数据划分到许多分类中，应该避免使用太小的中间层，以免在网络中造成信息瓶颈。
+
+## 3.6.5 小结（page=72）
+下面是你应该从[这个例子](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/book3.6.py)中学到的要点：
+
+* 何为回归问题：分类问题标签是离散的，回归问题的标签是连续的
+* 回归问题使用的损失函数与分类问题不同。回归常用的损失函数是均方误差（mean squared error），分类问题使用的损失函数是分类交叉熵，二分类用categorical\_crossentropy，多分类问题用sparse\_categorical\_crossentropy
+* 同样，回归问题使用的评估指标与分类问题不同，显而易见，精度的概念不适用于回归问题。常见的回归指标是平均绝对误差（MAE）
+* 如果输入数据的特征具有不同的取值范围，应该先进行预处理，对每个特征单独进行缩放。
+* 如果可用的数据很少，使用K折验证可以可靠地评估模型。
+* 如果可用的训练数据很少，最好使用隐藏层较少（通常只有一到两个）的小型网络，以避免严重的过拟合
