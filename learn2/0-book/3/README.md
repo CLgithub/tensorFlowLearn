@@ -1,9 +1,5 @@
 # 三、神经网络入门
-<style>
-table  {
-	width: 100%;
-}
-</style>
+
 ## 3.1 神经网络剖析
 * <b>层</b>，多个层组合成<b>网络</b>（或<b>模型</b>）
 * <b>输入数据</b>和对应的<b>目标</b>
@@ -12,7 +8,7 @@ table  {
 * <b>衡量标尺</b>：
 
 ## 3.4.7 小结（page=59）
-下面是你应该从[这个例子](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/book3.4.py)（影评二分类）中学到的要点：
+下面是你应该从[这个例子](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/3/book3.4.py)（影评二分类）中学到的要点：
 
 * 通常需要对原始数据进行大量预处理，以便将其转换为张量输入到神经网络中。单词序列可以编码为二进制向量，但也有其他编码方式。
 * 带有relu激活的Dense层堆叠，可以解决很多问题（包括情感分类），你可能会经常用到这种模型。
@@ -22,7 +18,7 @@ table  {
 * 随着神经网络在训练数据上的表现越来越好，模型最终会过拟合，并在前所未见的数据上得到越来越差的结果。一定要一直监控模型在训练集之外的数据上的性能。
 
 ## 3.5.9 小结（page=66）
-下面是你应该从[这个例子](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/book3.5.py)（新闻多分类问题）中学到的要点：
+下面是你应该从[这个例子](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/3/book3.5.py)（新闻多分类问题）中学到的要点：
 
 * 如果要对N个类别的数据点进行分类，网络的最后一层应该是大小为N的Dense层。
 * 对于单标签、多分类问题，网络的最后一层应该使用softmax激活函数，这样可以输出在N个输出类别上的概率分布。
@@ -33,7 +29,7 @@ table  {
 * 如果你需要将数据划分到许多分类中，应该避免使用太小的中间层，以免在网络中造成信息瓶颈。
 
 ## 3.6.5 小结（page=72）
-下面是你应该从[这个例子](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/book3.6.py)（预测房价回归问题）中学到的要点：
+下面是你应该从[这个例子](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/3/book3.6.py)（预测房价回归问题）中学到的要点：
 
 * 何为回归问题：分类问题标签是离散的，回归问题的标签是连续的
 * 回归问题使用的损失函数与分类问题不同。回归常用的损失函数是均方误差（mean squared error），分类问题使用的损失函数是分类交叉熵，二分类用categorical\_crossentropy，多分类问题用sparse\_categorical\_crossentropy
