@@ -124,6 +124,24 @@
 
 	
 ### 3. 添加dropout正则化
+👻：其实就是随机失活<br>
+对某一层使用dropout，就是在训练过程中随机将该层的一些输出特征舍弃(设置为0)，**dropout比率(dropout rate)**是被设为 0 的特征所占的比例，通常在**0.2~0.5**范围内。测试时没有单元被舍弃，而该层的输出值需要按 dropout 比率缩小，因为这时比训练时有更多的单元被激活，需要加以平衡。<br>
+👻：训练时使用了dropout后，测试时就要按比率缩小，或者训练时使用了dropout后，按比率放大，测试时就可保持不变，[见例](https://github.com/CLgithub/tensorFlowLearn/tree/master/learn2/0-book/4/book4.4.3_1.py)
+![](images/4.4-4.png)
+<center>训练时对激活矩阵使用dropout，并在训练时成比例增大。测试时激活矩阵保持不变</center>
 
+[影评分类例](https://github.com/CLgithub/tensorFlowLearn/tree/master/learn2/0-book/4/book4.4.3_2.py)
+![](images/4.4-5.png)
+<center>绿线比蓝线更不容易过拟合</center>
+![](images/4.4-6.png)
+<center>绿线精度也比蓝线精度更高更稳定</center>
+
+### 总结，防止神经网络过拟合的常用方法包括：
+1. 获取更多的训练数据
+2. 减小网络容量
+3. 添加权重正则化
+4. 添加dropout
+
+	👻：可以考虑几种方法一起用上
 
 ## 4.5 机器学习的通用工作流
