@@ -56,9 +56,10 @@
 	* sigmoid：而sigmoid函数则将任意值“压缩”到 [0, 1] 区间内，其输出值可以看作概率值
 * 编译选择
 
-——|二分类|多分类|回归
-:--|:--:|:--:|:--:
-<b>损失函数</b>|binary\_crossentropy<br>(二元交叉熵)|categorical_crossentropy<br>(分类交叉熵,one-hot分类编码)<br>sparse\_categorical\_crossentropy<br>(稀少分类交叉熵,整数张量)|mse<br>(均方误差mean squared error)
-<b>优化器</b>|rmsprop(SGD的变体)|rmsprop|rmsprop
-<b>衡量指标</b>|accuracy|accuracy|mea<br>(平均绝对误差mean absolute error)
-
+——|最后一层的激活|损失函数|优化器|衡量指标
+:--|:--:|:--:|:--:|:--:
+**二分类**|sigmoid|binary\_crossentropy<br>(二元交叉熵)|rmsprop(SGD的变体)|accuracy
+**多分类、单标签**|softmax|categorical_crossentropy<br>(分类交叉熵,one-hot分类编码)<br>sparse\_categorical\_crossentropy<br>(稀少分类交叉熵,整数张量)|rmsprop|accuracy
+**多分类、多标签**|sigmoid|binary_crossentropy||
+**回归（任意值）**|无|mse<br>(均方误差mean squared error)|rmsprop|mea<br>(平均绝对误差mean absolute error)
+**回归（0～1）**|sigmoid|mse 或 binary_crossentropy|||

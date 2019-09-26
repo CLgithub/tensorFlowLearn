@@ -179,6 +179,29 @@
 * 特征工程：利用你自己对数据和机器学习算法的知识对数据进行硬编码的变换
 
 ### 4.5.5. 开发比基准更好的模型
+目标：获得**统计功效（statistical power）**，即开发一个小型模型，它能打败纯随机的基准（dumb baseline），如在手写数字识别中随机基准为10%，（[但在谷歌最新的“权重无关” 神经网络这种特色架中，构建出的随机权重的模型，精度可>80%](https://github.com/google/brain-tokyo-workshop/tree/master/WANNRelease)）,任何这个精度的模型都可以说具有统计功效；
+但不一定会获得随机功效，要注意两个假设：
+	
+	* 假设输出是可以根据输入进行预测的
+	* 假设可用的数据包含足够多的信息，足以学习输入和输出之间的关系
+ 
+三个参数构建第一个工作模型：
+
+* 最后一层的激活
+* 损失函数
+* 优化器
+* 👻（衡量指标）
+
+构建模型和编译模型时，选择正确的模块：
+
+——|最后一层的激活|损失函数|优化器|衡量指标
+:--|:--:|:--:|:--:|:--:
+**二分类**|sigmoid|binary\_crossentropy<br>(二元交叉熵)|rmsprop(SGD的变体)|accuracy
+**多分类、单标签**|softmax|categorical_crossentropy<br>(分类交叉熵,one-hot分类编码)<br>sparse\_categorical\_crossentropy<br>(稀少分类交叉熵,整数张量)|rmsprop|accuracy
+**多分类、多标签**|sigmoid|binary_crossentropy||
+**回归（任意值）**|无|mse<br>(均方误差mean squared error)|rmsprop|mea<br>(平均绝对误差mean absolute error)
+**回归（0～1）**|sigmoid|mse 或 binary_crossentropy|||
+
 ### 4.5.6. 扩大模型规模：开发过拟合的模型
 ### 4.5.7. 模型正则化与调节超参数 
 
