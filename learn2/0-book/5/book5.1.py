@@ -15,7 +15,7 @@ from keras.utils import to_categorical
 
 # 设置卷积神经网络
 model = models.Sequential()
-#添加一个卷积层，接收图片形状(28,28,1),通道数量为32，激活函数为relu
+#添加一个卷积层，接收图片形状(28,28,1),通道数量为32，小窗大小为(3,3)，激活函数为relu    ,通道数--深度轴
 model.add(layers.Conv2D(32, (3,3), activation='relu', input_shape=(28,28,1)))	
 model.add(layers.MaxPooling2D((2,2)))
 model.add(layers.Conv2D(64, (3,3), activation='relu' ))
