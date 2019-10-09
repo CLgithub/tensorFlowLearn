@@ -11,6 +11,12 @@
 👻：学完本章目标，能自己编写验证码识别程序，动物🐒图片分类程序等等
 
 ## 5.1 卷积神经网络简介
+* [全连接神经网络图片分类](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/3/book2.1.py)
+* [简单卷积神经网络图片分类](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/5/book5.1.py)
+
+简单卷积神经网络 比 全连接神经网络 提升2%的精度
+
+
 ### 5.1.1 卷积运算
 ### 5.1.2 最大池化运算
 ## 5.2 在小型数据集上从头开始训练一个卷积神经网络
