@@ -11,6 +11,8 @@ data.db
 bin/
 build/
 out/
+data/
+*.h5
 
 # Folder config file
 Desktop.ini
