@@ -46,7 +46,11 @@
 每个特征对全部图块的响应为响应图(26,26,1)<br>
 所有的响应图总和得到输出特征图(shape=(height,width,output\_depth)(26,26,32))
 
+<<<<<<< HEAD
 2. ![卷积神经网络原理图](images/5.1-2_卷积神经网络原理图.png)
+=======
+2. ![卷积神经网络原理图](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/5/images/5.1-2_卷积神经网络原理图.png "卷积神经网络原理图")
+>>>>>>> 860d0e2fe509e4ca281540032ac556e590ba91a6
 <br><br><br>
 
 注意⚠️：输出的宽度和高度可能与输入的宽度和高度不同。不同的原因可能有两点
