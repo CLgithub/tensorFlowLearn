@@ -1,6 +1,6 @@
 #coding=utf-8
 
-# 猫🐱 狗🐶 图片分类器
+# 猫🐱 狗🐶 图片分类器，基础模型
 
 import os, shutil
 from keras import layers
@@ -106,11 +106,11 @@ history=model.fit_generator(    #开始训练，fit_generator在数据生成器�
     train_generator,      #数据生成器,可以不停的生成输入和目标组成的批量
     steps_per_epoch=100,    # 每一轮抽取多少批次的生成器生成的数据，本例中，每批量20，共2000，所以每轮抽取100个批次数据生成器的数据，轮训完一轮用完所有图片
     epochs=10,              # 轮训次数
-    validation_data=validation_generator,   #验证集，可以是numpy，也可以是数据生成器
+    validation_data=validation_generator,   #验证集，可以是numpy数组组成的元祖，也可以是数据生成器
     validation_steps=50                 # 从验证集中抽取多少个批次用于评估
     )
 
-model.save('cats_and_dogs_small_1.h5')  #保存模型
+model.save('cats_and_dogs_small_5.2.h5')  #保存模型
 
 def show2(t_loss,t_acc,v_loss,v_acc):
     epochs=range(1, len(t_loss)+1)
