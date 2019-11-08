@@ -111,7 +111,7 @@ VGG16 等模型内置于Keras中。你可以从 keras.applications模块中导�
 * 在数据集上运行卷积基，将输出保存成硬盘中的numpy数组(图像的变换)，然后用这个数据作为输入，输入到独立的Dense层中进行分类。有点：计算量低速度快。缺点：不能使用数据增强
 [使用预处理的卷积神经网络：使用VGG16进行特征提取1](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/5/book5_3_1.py)
 ![](images/5.3-2.png)
-* 在卷积基上添加Dense层，并在输入数据上端到端的运行整个模型。有点：可以使用数据增强。缺点：计算量高很多[使用预处理的卷积神经网络：使用VGG16进行特征提取2](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/5/book5.3.1.py)
+* 在卷积基上添加Dense层，并在输入数据上端到端的运行整个模型。有点：可以使用数据增强。缺点：计算量高很多[使用预处理的卷积神经网络：使用VGG16进行特征提取2](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/5/book5_3_2.py)
 
 
 

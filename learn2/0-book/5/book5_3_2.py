@@ -1,6 +1,6 @@
 #coding=utf-8
 
-# 猫🐱 狗🐶 图片分类器，使用预处理的卷积神经网络：使用VGG16进行特征提取1
+# 猫🐱 狗🐶 图片分类器，使用预处理的卷积神经网络：使用VGG16进行特征提取2
 
 import os, shutil
 from keras import layers
@@ -65,51 +65,49 @@ def copyData():
         dst = os.path.join(test_dogs_dir, fname)
         shutil.copyfile(src, dst)
 
-# 定义取出特征函数
-def extract_features(directory, sample_count, batch_size=20):
-    datagen=ImageDataGenerator(rescale=1./255) 
-    conv_base = VGG16(  # 构建卷积基
-        weights='imagenet', # 指定模型初始化的权重检查点
-        include_top=False,  # 指定模型最后是否包含密集连接分类器
-        input_shape=(150,150,3) # 输入到网络中的图像张量的形状（可选），如果不传，网络可以处理任意形状的输入
-        )
-    # print(conv_base.summary())
-    features = np.zeros(shape=(sample_count, 4, 4, 512))
-    labels = np.zeros(shape=(sample_count))
-    generator = datagen.flow_from_directory(
-        directory,
-        target_size=(150,150),
-        batch_size=batch_size,
-        class_mode='binary')
-    i = 0
-    for input_shape, labels_batch in generator:
-        features_batch = conv_base.predict(input_shape)
-        features[i * batch_size : (i+1) * batch_size] = features_batch
-        labels[i * batch_size : (i+1) * batch_size] = labels_batch
-        i += 1
-        if i * batch_size >=sample_count:
-            break
-    return features, labels
 
 # 利用卷积基进行数据预处理
 def cdate():
-    # 分别抽取训练集、校验集、测试集的特征
-    train_features, train_labels = extract_features(train_dir, 2000) # train_features.shape=(samples, 4, 4, 512)
-    validation_features, validation_labels = extract_features(validation_dir, 1000)
-    test_features, test_labels = extract_features(test_dir, 1000)
+    #数据预处理
+    train_datagen=ImageDataGenerator(
+        rescale=1./255,  #设置放缩比例
+        rotation_range=40,
+        width_shift_range=0.2,
+        height_shift_range=0.2,
+        shear_range=0.2,
+        zoom_range=0.2,
+        horizontal_flip=True,
+    )    
+    test_datagen=ImageDataGenerator(rescale=1./255) #不能增强验证数据
 
-    # (samples, 4, 4, 512)要将特征输入到密集连接层，首先展平为(sample,4*4*512=8192)
-    train_features = np.reshape(train_features, (2000, 4*4*512))
-    validation_features = np.reshape(validation_features, (1000, 4*4*512))
-    test_features = np.reshape(test_features, (1000, 4*4*512))
-    return train_features,train_labels, validation_features,validation_labels, test_features,test_labels
+    train_generator=train_datagen.flow_from_directory(  #构建python生成器,是一个类似迭代器的对象,从目录中读取图像数据并预处理
+        train_dir,  #目标目录
+        target_size=(150, 150), #将所有图片的大小调整为150*150
+        batch_size=20,          #生成器每批次样本数量
+        class_mode='binary'     #因为使用了binary_crossentropy损失，所以需要用二进制标签
+        )
+    validation_generator=test_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(150, 150),
+        batch_size=20,
+        class_mode='binary'
+        )
+    return train_generator,validation_generator
 
 # 构建模型
 def getModel():
     #搭建模型，只需要密集连接层
     model=models.Sequential()
-    model.add(layers.Dense(256, activation='relu', input_dim=4*4*512 ))
-    model.add(layers.Dropout(0.5))
+    conv_base = VGG16(  # 构建卷积基
+        weights='imagenet', # 指定模型初始化的权重检查点
+        include_top=False,  # 指定模型最后是否包含密集连接分类器
+        input_shape=(150,150,3) # 输入到网络中的图像张量的形状（可选），如果不传，网络可以处理任意形状的输入
+        )
+    conv_base.trainable = False #将卷积基冻结
+    model.add(conv_base)    # 构建模型，直接添加卷积基
+    model.add(layers.Flatten())
+    model.add(layers.Dense(256, activation='relu'))
+    # model.add(layers.Dropout(0.5))
     model.add(layers.Dense(1, activation='sigmoid'))
 
     # 编译模型
@@ -119,17 +117,17 @@ def getModel():
             )
     return model
 
-def run(model,train_features,train_labels,validation_features,validation_labels):
+def run(model, train_generator, validation_generator):
     # 训练
-    history = model.fit(
-        train_features,
-        train_labels,
-        epochs=15,
-        batch_size=20,
-        validation_data=(validation_features, validation_labels)
+    history=model.fit_generator(    #开始训练，fit_generator在数据生成器上的效果和fit相同
+        train_generator,      #数据生成器,可以不停的生成输入和目标组成的批量
+        steps_per_epoch=100,    # 每一轮抽取多少批次的生成器生成的数据，本例中，每批量20，共2000，所以每轮抽取100个批次数据生成器的数据，轮训完一轮用完所有图片
+        epochs=30,              # 轮训次数
+        validation_data=validation_generator,   #验证集，可以是numpy数组组成的元祖，也可以是数据生成器
+        validation_steps=50                 # 从验证集中抽取多少个批次用于评估
         )
     # 保存训练结果
-    model.save('cats_and_dogs_small_5.3.1.h5')  #保存模型
+    model.save('cats_and_dogs_small_5.3.2.h5')  #保存模型
     return history
 
 def show2(t_loss,t_acc,v_loss,v_acc):
@@ -152,15 +150,16 @@ def show2(t_loss,t_acc,v_loss,v_acc):
 
 def func1():
     #copyData()
-    train_features,train_labels, validation_features,validation_labels, test_features,test_labels=cdate()
+    train_generator, validation_generator=cdate()
     model=getModel()
-    history=run(model,train_features,train_labels,validation_features,validation_labels)
-    t_loss=history.history['loss']
-    t_acc=history.history['acc']
-    v_loss=history.history['val_loss']
-    v_acc=history.history['val_acc']
-    show2(t_loss,t_acc,v_loss,v_acc)
+    # print(model.summary())
+    # history=run(model, train_generator, validation_generator)
+    # t_loss=history.history['loss']
+    # t_acc=history.history['acc']
+    # v_loss=history.history['val_loss']
+    # v_acc=history.history['val_acc']
+    # show2(t_loss,t_acc,v_loss,v_acc)
 
-
+func1()
 
 
