@@ -12,9 +12,12 @@ import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from keras.preprocessing import image
+from keras.applications import VGG16 # 导入VGG16模型
+# from book5_3_1 import extract_features
 
 cla=['🐱','🐶']
 cla1=['猫','狗']
+
 
 # 准备数据
 img_paths=[]
@@ -45,11 +48,22 @@ for img_path in img_paths:  #将图片转换成array
     xs.append(x1)
 x=np.array(xs)
 
-#x=x.reshape((1,) + x.shape) # 将其转换为形状(1,150,150,3)
+# 将数据输入到conv_base中
+conv_base = VGG16(  # 构建卷积基
+        weights='imagenet', # 指定模型初始化的权重检查点
+        include_top=False,  # 指定模型最后是否包含密集连接分类器
+        input_shape=(150,150,3) # 输入到网络中的图像张量的形状（可选），如果不传，网络可以处理任意形状的输入
+        )
+test_features = conv_base.predict(x)
+print(test_features.shape)
 
-# 检测
-model=models.load_model('cats_and_dogs_small_5.2.5.h5') #加载保存模型
-predictions = model.predict(x)
+# 转换形状，便于输入到模型中
+test_features=np.reshape(test_features, (len(xs),4*4*512))
+print(test_features.shape)
+
+# 将卷积基的输出输入到模型中
+model=models.load_model('cats_and_dogs_small_5.3.1.h5') # 加载保存模型
+predictions = model.predict(test_features)
 print(predictions)
 for p in predictions:
     if p[0]>=0.5:
