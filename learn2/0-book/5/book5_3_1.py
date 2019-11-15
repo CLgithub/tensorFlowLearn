@@ -1,6 +1,6 @@
 #coding=utf-8
 
-# 猫🐱 狗🐶 图片分类器，使用预处理的卷积神经网络：使用VGG16进行特征提取1
+# 猫🐱 狗🐶 图片分类器，使用预训练的卷积神经网络：使用VGG16进行特征提取1：将数据输入到VGG16的卷积基中，得到输出，将改输出输入到模型中
 
 import os, shutil
 from keras import layers
@@ -162,5 +162,5 @@ def func1():
     show2(t_loss,t_acc,v_loss,v_acc)
 
 
-
+func1()
 

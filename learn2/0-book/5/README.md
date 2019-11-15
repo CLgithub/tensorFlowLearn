@@ -112,10 +112,11 @@ VGG16 等模型内置于Keras中。你可以从 keras.applications模块中导�
 [使用预处理的卷积神经网络：使用VGG16进行特征提取1](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/5/book5_3_1.py)
 ![](images/5.3-2.png)
 * 在卷积基上添加Dense层，并在输入数据上端到端的运行整个模型。有点：可以使用数据增强。缺点：计算量高很多[使用预处理的卷积神经网络：使用VGG16进行特征提取2](https://github.com/CLgithub/tensorFlowLearn/blob/master/learn2/0-book/5/book5_3_2.py)
-
-
+![](images/5.3-3.png)
 
 ### 5.3.2 微调模型
+对于用于特征提取的冻结的模型基，微调是指将其顶部的几层“解冻”，并将这解冻的几层和新增加的部分(本例中是全连接分类器)联合训练,见图
+![](images/5.3-4.png)
 ### 5.3.3 小结
 ## 5.4 卷积神经网络的可视化
 ### 5.4.1 可视化中间激活

@@ -1,6 +1,6 @@
 #coding=utf-8
 
-# 猫🐱 狗🐶 图片分类器，使用预处理的卷积神经网络：使用VGG16进行特征提取2
+# 猫🐱 狗🐶 图片分类器，使用预训练的卷积神经网络：使用VGG16进行特征提取2：直接用VGG16的卷积基（冻结），拼接全连接层，进行训练，可以利用数据增强
 
 import os, shutil
 from keras import layers
@@ -77,6 +77,7 @@ def cdate():
         shear_range=0.2,
         zoom_range=0.2,
         horizontal_flip=True,
+        fill_mode='nearest'
     )    
     test_datagen=ImageDataGenerator(rescale=1./255) #不能增强验证数据
 
@@ -107,7 +108,7 @@ def getModel():
     model.add(conv_base)    # 构建模型，直接添加卷积基
     model.add(layers.Flatten())
     model.add(layers.Dense(256, activation='relu'))
-    # model.add(layers.Dropout(0.5))
+    model.add(layers.Dropout(0.5))
     model.add(layers.Dense(1, activation='sigmoid'))
 
     # 编译模型
@@ -149,16 +150,16 @@ def show2(t_loss,t_acc,v_loss,v_acc):
 
 
 def func1():
-    #copyData()
+    # copyData()
     train_generator, validation_generator=cdate()
     model=getModel()
     # print(model.summary())
-    # history=run(model, train_generator, validation_generator)
-    # t_loss=history.history['loss']
-    # t_acc=history.history['acc']
-    # v_loss=history.history['val_loss']
-    # v_acc=history.history['val_acc']
-    # show2(t_loss,t_acc,v_loss,v_acc)
+    history=run(model, train_generator, validation_generator)
+    t_loss=history.history['loss']
+    t_acc=history.history['acc']
+    v_loss=history.history['val_loss']
+    v_acc=history.history['val_acc']
+    show2(t_loss,t_acc,v_loss,v_acc)
 
 func1()
 

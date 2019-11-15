@@ -48,7 +48,8 @@ x=np.array(xs)
 #x=x.reshape((1,) + x.shape) # 将其转换为形状(1,150,150,3)
 
 # 检测
-model=models.load_model('cats_and_dogs_small_5.2.5.h5') #加载保存模型
+# model=models.load_model('cats_and_dogs_small_5.2.5.h5') #加载保存模型
+model=models.load_model('cats_and_dogs_small_5.3.2.h5') #加载保存模型
 predictions = model.predict(x)
 print(predictions)
 for p in predictions:
