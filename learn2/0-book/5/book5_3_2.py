@@ -12,9 +12,18 @@ matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from keras.applications import VGG16 # 导入VGG16模型
 import numpy as np
+import tensorflow as tf
 
-original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
-base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
+# 配置gpu训练时内存分配，应该单独学习gpu资源管理，合理分配gpu资源，才能更好的利用，tensorflow还没能在工具层处理这问题，所以才必须在代码中进行配置
+config = tf.ConfigProto(log_device_placement=False)    # 是否打印设备分配日志
+config.gpu_options.per_process_gpu_memory_fraction=0.7 # 设置每个gpu应该拿出多少容量给进程使用
+config.operation_timeout_in_ms=15000   # terminate on long hangs
+sess = tf.InteractiveSession("", config=config)
+
+original_dataset_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
+#original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
+base_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
+#base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
 #os.mkdir(base_dir)
 train_dir=os.path.join(base_dir, 'train')   #训练
 validation_dir=os.path.join(base_dir, 'validation') #校验

@@ -10,9 +10,17 @@ from keras.preprocessing.image import ImageDataGenerator
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
-original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
-base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
+config = tf.ConfigProto(log_device_placement=False)    # 是否打印设备分配日志
+config.gpu_options.per_process_gpu_memory_fraction=0.7 # 设置每个gpu应该拿出多少容量给进程使用
+config.operation_timeout_in_ms=15000   # terminate on long hangs
+sess = tf.InteractiveSession("", config=config)
+
+original_dataset_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
+#original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
+base_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
+#base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
 #os.mkdir(base_dir)
 train_dir=os.path.join(base_dir, 'train')   #训练
 validation_dir=os.path.join(base_dir, 'validation') #校验
@@ -105,7 +113,7 @@ validation_generator=test_datagen.flow_from_directory(
 history=model.fit_generator(    #开始训练，fit_generator在数据生成器上的效果和fit相同
     train_generator,      #数据生成器,可以不停的生成输入和目标组成的批量
     steps_per_epoch=100,    # 每一轮抽取多少批次的生成器生成的数据，本例中，每批量20，共2000，所以每轮抽取100个批次数据生成器的数据，轮训完一轮用完所有图片
-    epochs=10,              # 轮训次数
+    epochs=30,              # 轮训次数
     validation_data=validation_generator,   #验证集，可以是numpy数组组成的元祖，也可以是数据生成器
     validation_steps=50                 # 从验证集中抽取多少个批次用于评估
     )
@@ -118,7 +126,7 @@ def show2(t_loss,t_acc,v_loss,v_acc):
     plt.subplot(1,2,1)
     plt.plot(epochs, t_loss, 'b', label='t_loss')
     plt.plot(epochs, v_loss, 'r', label='v_loss')
-    plt.ylim([0,2])
+    plt.ylim([0,1])
     plt.title('loss')
     plt.legend()
     plt.subplot(1,2,2)
