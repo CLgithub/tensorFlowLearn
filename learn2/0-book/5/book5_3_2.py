@@ -21,9 +21,9 @@ config.operation_timeout_in_ms=15000   # terminate on long hangs
 sess = tf.InteractiveSession("", config=config)
 
 original_dataset_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
-#original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
+original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
 base_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
-#base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
+base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
 #os.mkdir(base_dir)
 train_dir=os.path.join(base_dir, 'train')   #训练
 validation_dir=os.path.join(base_dir, 'validation') #校验
@@ -106,25 +106,35 @@ def cdate():
 
 # 构建模型
 def getModel():
-    #搭建模型，只需要密集连接层
-    model=models.Sequential()
     conv_base = VGG16(  # 构建卷积基
         weights='imagenet', # 指定模型初始化的权重检查点
         include_top=False,  # 指定模型最后是否包含密集连接分类器
         input_shape=(150,150,3) # 输入到网络中的图像张量的形状（可选），如果不传，网络可以处理任意形状的输入
         )
-    conv_base.trainable = False #将卷积基冻结
+
+    #搭建模型，只需要密集连接层
+    model=models.Sequential()
     model.add(conv_base)    # 构建模型，直接添加卷积基
     model.add(layers.Flatten())
     model.add(layers.Dense(256, activation='relu'))
-    model.add(layers.Dropout(0.5))
+    model.add(layers.Dropout(0.5))  
     model.add(layers.Dense(1, activation='sigmoid'))
 
-    # 编译模型
+    # 设置卷积基为不可训练
+    # 1.在model层面设置
+    conv_base.trainable = False #设置卷积基不可训练，此设置针对model模型中来说，
+    # 2.在卷积基内部对每一层进行设置
+    # for layer in conv_base.layers:
+    #     layer.trainable=False
+
+    # 改变trainable属性后再进行模型编译，使改变生效
     model.compile(loss='binary_crossentropy',
                 optimizer=optimizers.RMSprop(lr=2e-5),
                 metrics=['acc']
             )
+
+    # print(len(model.trainable_weights))
+    # model.summary()
     return model
 
 def run(model, train_generator, validation_generator):
@@ -162,7 +172,7 @@ def func1():
     # copyData()
     train_generator, validation_generator=cdate()
     model=getModel()
-    # print(model.summary())
+   
     history=run(model, train_generator, validation_generator)
     t_loss=history.history['loss']
     t_acc=history.history['acc']
