@@ -15,14 +15,14 @@ import numpy as np
 import tensorflow as tf
 
 config = tf.ConfigProto(log_device_placement=False)    # 是否打印设备分配日志
-config.gpu_options.per_process_gpu_memory_fraction=0.7 # 设置每个gpu应该拿出多少容量给进程使用
+config.gpu_options.per_process_gpu_memory_fraction=0.5 # 设置每个gpu应该拿出多少容量给进程使用
 config.operation_timeout_in_ms=15000   # terminate on long hangs
 sess = tf.InteractiveSession("", config=config)
 
 original_dataset_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
-#original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
+original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
 base_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
-#base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
+base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
 #os.mkdir(base_dir)
 train_dir=os.path.join(base_dir, 'train')   #训练
 validation_dir=os.path.join(base_dir, 'validation') #校验
@@ -132,7 +132,7 @@ def run(model,train_features,train_labels,validation_features,validation_labels)
     history = model.fit(
         train_features,
         train_labels,
-        epochs=15,
+        epochs=30,
         batch_size=20,
         validation_data=(validation_features, validation_labels)
         )
@@ -171,5 +171,4 @@ def func1():
 
 func1()
 
-func1()
 

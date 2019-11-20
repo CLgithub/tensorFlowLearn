@@ -16,7 +16,7 @@ import tensorflow as tf
 
 # 配置gpu训练时内存分配，应该单独学习gpu资源管理，合理分配gpu资源，才能更好的利用，tensorflow还没能在工具层处理这问题，所以才必须在代码中进行配置
 config = tf.ConfigProto(log_device_placement=False)    # 是否打印设备分配日志
-config.gpu_options.per_process_gpu_memory_fraction=0.7 # 设置每个gpu应该拿出多少容量给进程使用
+config.gpu_options.per_process_gpu_memory_fraction=0.5 # 设置每个gpu应该拿出多少容量给进程使用
 config.operation_timeout_in_ms=15000   # terminate on long hangs
 sess = tf.InteractiveSession("", config=config)
 
@@ -133,8 +133,11 @@ def getModel():
                 metrics=['acc']
             )
 
+    # for layer in model.layers:
+    #     print(layer.name,layer.trainable)
     # print(len(model.trainable_weights))
     # model.summary()
+   
     return model
 
 def run(model, train_generator, validation_generator):

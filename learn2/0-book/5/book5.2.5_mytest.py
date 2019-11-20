@@ -28,6 +28,14 @@ img_path7 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_
 img_path8 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test8.jpg'
 img_path9 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test9.jpg'
 img_path10 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test10.jpg'
+img_path11 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test11.jpg'
+img_path12 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test12.jpg'
+img_path13 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test13.jpg'
+img_path14 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test14.jpg'
+img_path15 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test15.jpg'
+img_path16 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test16.jpg'
+img_path17 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test17.jpg'
+img_path18 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test18.jpg'
 img_paths.append(img_path1)
 img_paths.append(img_path2)
 img_paths.append(img_path3)
@@ -38,6 +46,14 @@ img_paths.append(img_path7)
 img_paths.append(img_path8)
 img_paths.append(img_path9)
 img_paths.append(img_path10)
+img_paths.append(img_path11)
+img_paths.append(img_path12)
+img_paths.append(img_path13)
+img_paths.append(img_path14)
+img_paths.append(img_path15)
+img_paths.append(img_path16)
+img_paths.append(img_path17)
+img_paths.append(img_path18)
 xs=[]
 for img_path in img_paths:  #将图片转换成array
     img1 = image.load_img(img_path, target_size=(150,150))   # 读取图片并调整大小
