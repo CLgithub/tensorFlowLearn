@@ -17,6 +17,7 @@ cla=['🐱','🐶']
 cla1=['猫','狗']
 
 # 准备数据
+test_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small/test'
 img_paths=[]
 img_path1 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test1.jpg'
 img_path2 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test2.jpg'
@@ -62,11 +63,12 @@ for img_path in img_paths:  #将图片转换成array
 x=np.array(xs)
 
 #x=x.reshape((1,) + x.shape) # 将其转换为形状(1,150,150,3)
+# 加载模型
+# model=models.load_model('cats_and_dogs_small_5.2.5.h5') #加载保存模型
+model=models.load_model('cats_and_dogs_small_5.3.2.h5') #加载保存模型
+# model=models.load_model('cats_and_dogs_small_5.3.3.h5') #加载保存模型
 
 # 检测
-# model=models.load_model('cats_and_dogs_small_5.2.5.h5') #加载保存模型
-# model=models.load_model('cats_and_dogs_small_5.3.2.h5') #加载保存模型
-model=models.load_model('cats_and_dogs_small_5.3.3.h5') #加载保存模型
 predictions = model.predict(x)
 print(predictions)
 for p in predictions:
@@ -77,3 +79,13 @@ for p in predictions:
     print(cla1[cod],end='')
     print(cla[cod],end='\t')
 
+# 评估模型精度
+test_datagen = ImageDataGenerator(rescale=1./255)
+test_generator=test_datagen.flow_from_directory(
+    test_dir,
+    target_size=(150, 150),
+    batch_size=20,
+    class_mode='binary'
+    )
+test_loss, test_acc = model.evaluate_generator(test_generator, steps=50)
+print('test_acc',test_acc)
