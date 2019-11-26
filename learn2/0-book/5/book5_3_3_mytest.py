@@ -37,6 +37,8 @@ img_path15 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my
 img_path16 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test16.jpg'
 img_path17 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test17.jpg'
 img_path18 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test18.jpg'
+img_path19 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test19.jpg'
+img_path20 = '/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test20.jpg'
 img_paths.append(img_path1)
 img_paths.append(img_path2)
 img_paths.append(img_path3)
@@ -55,6 +57,8 @@ img_paths.append(img_path15)
 img_paths.append(img_path16)
 img_paths.append(img_path17)
 img_paths.append(img_path18)
+img_paths.append(img_path19)
+img_paths.append(img_path20)
 xs=[]
 for img_path in img_paths:  #将图片转换成array
     img1 = image.load_img(img_path, target_size=(150,150))   # 读取图片并调整大小
@@ -79,6 +83,7 @@ for p in predictions:
     print(cla1[cod],end='')
     print(cla[cod],end='\t')
 
+'''
 # 评估模型精度
 test_datagen = ImageDataGenerator(rescale=1./255)
 test_generator=test_datagen.flow_from_directory(
@@ -89,3 +94,4 @@ test_generator=test_datagen.flow_from_directory(
     )
 test_loss, test_acc = model.evaluate_generator(test_generator, steps=50)
 print('test_acc',test_acc)
+'''
