@@ -58,6 +58,7 @@ xs=[]
 for img_path in img_paths:  #将图片转换成array
     img1 = image.load_img(img_path, target_size=(150,150))   # 读取图片并调整大小
     x1=image.img_to_array(img1) # 将其转换为形状(150,150,3)的numpy数组
+    x1 /= 255   # 数据预处理
     xs.append(x1)
 x=np.array(xs)
 
