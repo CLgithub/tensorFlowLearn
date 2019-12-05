@@ -60,7 +60,8 @@ def getTestImg():
 	# img_paths.append('/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test17.jpg')
 	# img_paths.append('/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test18.jpg')
 	# img_paths.append('/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test19.jpg')
-	img_paths.append('/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test20.jpg')
+	# img_paths.append('/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/my_test20.jpg')
+	img_paths.append('/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/my_test/Figure_1.png')
 	xs=[]
 	for img_path in img_paths:  #将图片转换成array
 	    img1 = image.load_img(img_path, target_size=(150,150))   # 读取图片并调整大小

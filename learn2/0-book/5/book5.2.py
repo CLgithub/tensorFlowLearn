@@ -110,11 +110,11 @@ validation_generator=test_datagen.flow_from_directory(
     class_mode='binary'
     )
 
-history=model.fit_generator(    #开始训练，fit_generator在数据生成器上的效果和fit相同
-    train_generator,      #数据生成器,可以不停的生成输入和目标组成的批量
+history=model.fit_generator(    # 开始训练，fit_generator在数据生成器上的效果和fit相同
+    train_generator,      # 数据生成器,可以不停的生成输入和目标组成的批量
     steps_per_epoch=100,    # 每一轮抽取多少批次的生成器生成的数据，本例中，每批量20，共2000，所以每轮抽取100个批次数据生成器的数据，轮训完一轮用完所有图片
     epochs=30,              # 轮训次数
-    validation_data=validation_generator,   #验证集，可以是numpy数组组成的元祖，也可以是数据生成器
+    validation_data=validation_generator,   # 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
     validation_steps=50                 # 从验证集中抽取多少个批次用于评估
     )
 
