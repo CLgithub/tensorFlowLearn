@@ -43,7 +43,7 @@ validation_dogs_dir=os.path.join(validation_dir, 'dogs')
 test_cats_dir=os.path.join(test_dir, 'cats')
 test_dogs_dir=os.path.join(test_dir, 'dogs')
 
-img_path = './data/my_test/my_test5.jpg'
+img_path = './data/my_test/my_test6.jpg'
 
 img_paths=[]
 img_paths.append(img_path)
