@@ -50,10 +50,10 @@ def oneHotW_keras():
 	tokenizer = Tokenizer(num_words=10)	# 创建一个分词器(tokenizer)，设置为只考虑前1000个最常见的单词
 	tokenizer.fit_on_texts(samples) 	# 用分词器对 样本 构建单词索引
 	
-	print(tokenizer.word_index)
+	print(tokenizer.word_index) # 获取字典
 	
-	one_hot_results = tokenizer.texts_to_matrix(samples, mode='binary')
-	print(one_hot_results)
+	one_hot_results = tokenizer.texts_to_matrix(samples, mode='binary')	# one-hot 关联 方式
+	print(one_hot_results)	# 获取转换后的数据
 	
 	# sequences = tokenizer.texts_to_sequences(samples) 	# 将字符串转换为整数索引组成的列表
 	# print(sequences)
@@ -77,9 +77,9 @@ def oneHotW_hashingTrick():
 	# print(results_2)
 
 
-oneHotW()
+# oneHotW()
 # oneHotChar()
 oneHotW_keras()
-oneHotW_hashingTrick()
+# oneHotW_hashingTrick()
 
 
