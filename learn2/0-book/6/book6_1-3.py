@@ -26,7 +26,7 @@ allWordLen = 10000           # 只考虑数据集中前10000个常见的单词
 embedding_dim = 100 # 使用的是glove.6B.100d.txt
 
 # 处理原始数据，将原始数据转换成词嵌入关联方式的数据，
-# 并且获取词嵌入层的权重array，
+# 并且获取词嵌入层的权重array，index_nparray(allWordLen, embedding_dim)，
 # 该层输入(samples, sWordLen), 权重矩阵index_nparray(allWordLen, embedding_dim), , 输出(samples, sWordLen, embedding_dim)
 
 def readData(r_dir):
