@@ -57,17 +57,17 @@
 	最好将 Embedding 层理解为一个字典，将整数索引(表示特定单词)映射为密集向量。它接收整数作为输入，并在内部字典中查找这些整数，然后返回相关联的向量。Embedding层实际上是一种字典查找<br>
 	单词索引 ----> Embedding层 ----> 对应的词向量<br>
 	Embedding层的输入是一个二维整数张量，其形状为(samples,sequence\_length)，返回(samples,sequence\_length,embedding\_dimensionality)<br>
-	[在IMDB数据上使用Embedding层和分类器,line=29](./book6_2.py)，将整数索引(25000,20)映射为密集向量(25000,20,8)<br>
+	[在IMDB数据上使用Embedding层和分类器,line=29](./book6_1-2.py)，将整数索引(25000,20)映射为密集向量(25000,20,8)<br>
 	
 2. **预训练词嵌入**：在不同于待解决问题的机器学习任务上预计算好词嵌入，然后将其加载到模型中（👻：类似卷积神经网络使用预训练的模型），可以使用word2vec或GloVe。👻：不知有无中文模型
 
 ### 6.1.3 整合在一起:从原始文本到词嵌入
-与[book6_2.py](./book6_2.py)类似：将句子嵌入到向量序列中，然后展平，最后加一个Dense层。但此处使用预训练的词嵌入。此外还使用IMDB原始文本，不使用Keras内置的已经预分词的IMDB数据
+与[book6_1-2.py](./book6_1-2.py)类似：将句子嵌入到向量序列中，然后展平，最后加一个Dense层。但此处使用预训练的词嵌入。此外还使用IMDB原始文本，不使用Keras内置的已经预分词的IMDB数据
 
 1. [下载IMDB数据](http://mng.bz/0tIo)的原始文本，并进行处理
 2. 对数据进行分词
 3. [下载GloVe词嵌入](https://nlp.stanford.edu/projects/glove/)
-4. [整合在一起](./book6_2-2.py)
+4. [整合在一起](./book6_1-3.py)
 ![](./images/6.1-4.png)
 <center>使用词嵌入</center>
 可以在不加载预训练词嵌入、也不冻结嵌入层的情况下训练相同的模型。在这种情况下，你将会学到针对任务的输入标记的嵌入。如果有大量的可用数据，这种方法通常比预训练词嵌入更加强大
@@ -82,7 +82,42 @@
 * 使用预训练词嵌入在小型自然语言处理问题上获得额外的性能提升
 
 ## 6.2 理解循环神经网络
+之前的网络：密集连接网络和卷积神经网络都没有记忆性。它们单独的处理每个输入，在输入与输入之间没有保存任何状态。这样的网络想要处理序列，只能向网络展示整个序列，一次性处理。这种网络叫**前馈网络(feedforward network)**<br>
+生物智能以渐进的方式处理信息，同时保存一个关于所处理内容的内部模型，这个模型是根据过去的信息构建的，并随着新信息的进入而不断更新<br>
+**循环神经网络**采用同样的原理：遍历所有序列，并保存一个**状态**(state)，其中包含与已查看内容相关的信息。<br>
+![](./images/6.2-1.png)
+**<center>将前一次的计算输出迭代入到网络中</center>**<br>
+一条评论，即一个序列，序列的前一个元素，经过网络后，得到的输出迭代入网络中，下一个元素来的时候，网络中已经有了前所有元素的信息<br>
+
+[一个简单的RNN](./book6_2-1.py)
+![](./images/6.2-2.png)
+
 ### 6.2.1 Keras 中的循环层
+```
+from keras.layers import SimpleRNN
+```
+与Numpy实现的RNN有个小区别：
+
+* **SimpleRNN**层能够像其他Keras层一样处理序列批量```
+(batch_size, timesteps, input_features)
+```
+
+* Numpy示例处理：
+```
+(timesteps, input_features)
+```
+
+**SimpleRNN** 两种运行模式：
+
+* ```return_sequences=False```：返回每个输入序列的最终输出```(batch_size, output_features)```(默认)，每一个序列，都只看最后一步的输出
+
+* ```return_sequences=True```：返回每个时间步连续输出的完整序列```(batch_size, timesteps, output_features)```每一个序列，都看完整过程输出
+	
+	`batch_size`：批次大小<br>
+	`timesteps`：单个序列的长度<br>
+	`output_features`：输出特征<br>
+
+
 ### 6.2.2 理解 LSTM 层和 GRU 层
 ### 6.2.3 Keras 中一个 LSTM 的具体例子
 ### 6.2.4 小结
