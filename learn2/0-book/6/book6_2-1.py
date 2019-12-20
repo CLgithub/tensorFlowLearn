@@ -12,6 +12,7 @@ output_features = 3 #输出特征空间的维度
 
 inputs = np.random.random((timesteps, input_features))	#随机初始化一个序列
 
+
 state_t = np.zeros((output_features,)) # t时刻的状态
 
 W = np.random.random((output_features, input_features))
@@ -28,5 +29,6 @@ final_output_sequence = np.stack(successive_outputs, axis=0)
 print(final_output_sequence.shape) # (单个序列的长度,输出特征空间的维度) (10,3)
 
 print(np.array(successive_outputs)[-1])	# 最重要的是最后一步的输出信息，已经包含了整个序列的信息
+
 
 
