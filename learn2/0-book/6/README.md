@@ -116,6 +116,15 @@ from keras.layers import SimpleRNN
 	`batch_size`：批次大小<br>
 	`timesteps`：单个序列的长度<br>
 	`output_features`：输出特征<br>
+	
+[simpleRNN用于IMDB电影影评分类问题](./book6_2-3.py)
+![](./images/6.2-3.png)
+第3章得的方法得到的精度是88%，此处的精度85%，问题在于：
+
+1. 当前只截取了评论前500个单词
+2. SimpleRNN不擅长处理长序列，比如文本
+
+👻：将球队名称编码成序列，结合赔率，看看能否提高精度
 
 
 ### 6.2.2 理解 LSTM 层和 GRU 层
