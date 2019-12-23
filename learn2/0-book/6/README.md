@@ -126,13 +126,32 @@ from keras.layers import SimpleRNN
 
 👻：将球队名称编码成序列，结合赔率，看看能否提高精度
 
-
 ### 6.2.2 理解 LSTM 层和 GRU 层
+
+LSTM：long short-term memory，原理：它保存信息以便后面使用，从而防止较早期的信号在处理过程中逐渐消失
+```
+output_t = activation(dot(state_t, Uo) + dot(input_t, Wo) + dot(C_t, Vo) + bo)
+```
+```
+c_t+1 = i_t * k_t + c_t * f_t```![](./images/6.2-4.png)
 ### 6.2.3 Keras 中一个 LSTM 的具体例子
+![](./images/6.2-5.png)
+精度约89%，相对于第3章提升并不算高，主要原因在于：LSTM适用于评论分析全局的长期性结构，对情感分析问题帮助不大
 ### 6.2.4 小结
 
+* 循环神经网络(RNN)的概念及其工作原理
+* 长短期记忆(LSTM)是什么，为什么它在长序列上的效果要好于通 RNN
+* 如何使用 Keras 的 RNN 层来处理序列数据
+
 ## 6.3 循环神经网络的高级用法
+三种高级技巧，提高循环神经网络的性能和泛化能力：
+
+* 循环dropout：recurrent dropout，一种特殊的内置方法，在循环层中使用dropout来降低过拟合。
+* 堆叠循环层：stacking recurrent layers，这会提高网络的表示能力
+* 双向循环层：bidirectional recurrent layer，将相同的信息以不同的方式呈现给循环网络，可以提高精度并缓解遗忘问题。
+
 ### 6.3.1 温度预测问题
+下载数据
 ### 6.3.2 准备数据
 ### 6.3.3 一种基于常识的、非机器学习的基准方法
 ### 6.3.4 一种基本的机器学习方法

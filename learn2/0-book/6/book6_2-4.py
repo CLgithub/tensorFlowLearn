@@ -1,6 +1,6 @@
 # coding=utf-8
 
-# 使用keras中的循环神经网络，对IMDB电影评论进行处理  SimpleRNN
+# 使用keras中的循环神经网络，对IMDB电影评论进行处理  LSTM
 
 from keras.datasets import imdb
 from keras.preprocessing import sequence
@@ -27,23 +27,23 @@ train_x = sequence.pad_sequences(train_x, maxlen=maxlen)
 test_x = sequence.pad_sequences(test_x, maxlen=maxlen)
 
 def getModel():
-	model = models.Sequential()
-	model.add(layers.Embedding(max_features, 32))	# 嵌入层,序列向量字典(10000,32)
-	model.add(layers.SimpleRNN(32))
-	model.add(layers.Dense(1, activation='sigmoid'))
+    model = models.Sequential()
+    model.add(layers.Embedding(max_features, 32))	# 嵌入层,序列向量字典(10000,32)
+    model.add(layers.LSTM(32))
+    model.add(layers.Dense(1, activation='sigmoid'))
 
-	model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['acc'] )
-	
-	return model
+    model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['acc'] )
+
+    return model
 
 
 def run(model):
-	history = model.fit(
+    history = model.fit(
         train_x,train_y,
         epochs=10,
         batch_size=32,
         validation_split=0.2)
-	return history
+    return history
 
 
 def show2(t_loss,t_acc,v_loss,v_acc):
@@ -64,13 +64,13 @@ def show2(t_loss,t_acc,v_loss,v_acc):
     plt.show()
 
 def func1():
-	model=getModel()
-	history=run(model)
-	t_loss=history.history['loss']
-	t_acc=history.history['acc']
-	v_loss=history.history['val_loss']
-	v_acc=history.history['val_acc']
-	show2(t_loss,t_acc,v_loss,v_acc)
+    model=getModel()
+    history=run(model)
+    t_loss=history.history['loss']
+    t_acc=history.history['acc']
+    v_loss=history.history['val_loss']
+    v_acc=history.history['val_acc']
+    show2(t_loss,t_acc,v_loss,v_acc)
 
 func1()
 
