@@ -1,6 +1,6 @@
 # coding=utf-8
 
-# 基准方法、密集连接
+# 采用gru层，添加循环dropout层，并堆叠循环层
 
 import os
 import numpy as np
@@ -95,23 +95,9 @@ def getData(float_data):
 	return train_gen, val_gen, test_gen, val_steps, test_steps
 
 
-# 基于常识的预测：24小时后的温度等于现在的温度，使用平均绝对误差(MAE)指标来评估这种方法
-def evaluate_naive_method(val_gen, val_steps):
-	batch_maes = []
-	for step in range(val_steps):
-		samples, targets = next(val_gen)	
-		preds = samples[:, -1, 1]
-		mae = np.mean(np.abs(preds - targets))
-		batch_maes.append(mae)
-	print(np.mean(batch_maes))	
-	# MAE=0.29，温度数据被标准化成均值为0、标准差为1，所以无法直接对这个值进行解释。
-	# 它转化成温度的平均绝对误差为 0.29×temperature_std 摄氏度，即 2.57°C。std[1]是均方差  MAE=(温度-平均值)/均方差
-
-
-def dense_meatod(float_data, train_gen, val_gen, val_steps):
+def gru_meatod(float_data, train_gen, val_gen, val_steps):
 	model = models.Sequential()
-	model.add(layers.Flatten(input_shape=( lookback//step, float_data.shape[-1] )))
-	model.add(layers.Dense(32, activation='relu'))
+	model.add(layers.GRU(32, input_shape=(None, float_data.shape[-1])))		# GRU和LSTM原理相同，只是做了简化
 	model.add(layers.Dense(1))
 
 	model.compile(loss='mae', optimizer=optimizers.RMSprop())
@@ -120,6 +106,58 @@ def dense_meatod(float_data, train_gen, val_gen, val_steps):
 		train_gen,	# 数据生产器
 		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
 		epochs=20,				# 训练轮次
+		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
+		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
+		)
+	return history
+
+def gru_meatod_dropout(float_data, train_gen, val_gen, val_steps):
+	model = models.Sequential()
+	model.add(
+		layers.GRU(
+			32, input_shape=(None, float_data.shape[-1]), 
+			dropout=0.2, recurrent_dropout=0.2 	# dropout，指定该层输入单元的dropout比率，recurrent_dropout指定循环单元的dropout比率
+		)
+	)
+
+	model.add(layers.Dense(1))
+
+	model.compile(loss='mae', optimizer=optimizers.RMSprop())
+
+	history = model.fit_generator(
+		train_gen,	# 数据生产器
+		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
+		epochs=40,				# 训练轮次
+		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
+		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
+		)
+	return history
+
+def gru_meatod_dropout_2(float_data, train_gen, val_gen, val_steps):
+	model = models.Sequential()
+	model.add(
+		layers.GRU(
+			32, input_shape=(None, float_data.shape[-1]), 
+			dropout=0.2, recurrent_dropout=0.3, 	# dropout，指定该层输入单元的dropout比率，recurrent_dropout指定循环单元的dropout比率
+			return_sequences=True
+		)
+	)
+	model.add(
+		layers.GRU(
+			64,
+			dropout=0.2, recurrent_dropout=0.3,
+			activation='relu'
+		)
+	)
+
+	model.add(layers.Dense(1))
+
+	model.compile(loss='mae', optimizer=optimizers.RMSprop())
+
+	history = model.fit_generator(
+		train_gen,	# 数据生产器
+		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
+		epochs=40,				# 训练轮次
 		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
 		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
 		)
@@ -148,12 +186,10 @@ if __name__ == '__main__':
 	float_data=getFloatData()
 	train_gen, val_gen, test_gen, val_steps, test_steps = getData(float_data)
 
-	# evaluate_naive_method(val_gen, val_steps)
-	history = dense_meatod(float_data, train_gen, val_gen, val_steps)
+	history = gru_meatod_dropout_2(float_data, train_gen, val_gen, val_steps)
 	t_loss=history.history['loss']
 	# t_acc=history.history['acc']
 	v_loss=history.history['val_loss']
 	# v_acc=history.history['val_acc']
 	show2(t_loss,v_loss)
-
 

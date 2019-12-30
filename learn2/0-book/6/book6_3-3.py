@@ -1,6 +1,6 @@
 # coding=utf-8
 
-# 基准方法、密集连接
+# 采用gru层
 
 import os
 import numpy as np
@@ -125,6 +125,22 @@ def dense_meatod(float_data, train_gen, val_gen, val_steps):
 		)
 	return history
 
+def gru_meatod(float_data, train_gen, val_gen, val_steps):
+	model = models.Sequential()
+	model.add(layers.GRU(32, input_shape=(None, float_data.shape[-1])))		# GRU和LSTM原理相同，只是做了简化
+	model.add(layers.Dense(1))
+
+	model.compile(loss='mae', optimizer=optimizers.RMSprop())
+
+	history = model.fit_generator(
+		train_gen,	# 数据生产器
+		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
+		epochs=20,				# 训练轮次
+		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
+		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
+		)
+	return history
+
 def show2(t_loss,v_loss):
     epochs=range(1, len(t_loss)+1)
     plt.figure(figsize=(10,5))
@@ -149,7 +165,8 @@ if __name__ == '__main__':
 	train_gen, val_gen, test_gen, val_steps, test_steps = getData(float_data)
 
 	# evaluate_naive_method(val_gen, val_steps)
-	history = dense_meatod(float_data, train_gen, val_gen, val_steps)
+	# history = dense_meatod(float_data, train_gen, val_gen, val_steps)
+	history = gru_meatod(float_data, train_gen, val_gen, val_steps)
 	t_loss=history.history['loss']
 	# t_acc=history.history['acc']
 	v_loss=history.history['val_loss']
