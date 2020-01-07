@@ -84,10 +84,10 @@ def getData(float_data):
 		min_index=0, max_index=200000, shuffle=True, step=step, batch_size=batch_size)
 
 	val_gen = generator(data=float_data, lookback=lookback, delay=delay, 
-		min_index=200001, max_index=300000, shuffle=True, step=step, batch_size=batch_size)
+		min_index=200001, max_index=300000, step=step, batch_size=batch_size)
 
 	test_gen = generator(data=float_data, lookback=lookback, delay=delay, 
-		min_index=300001, max_index=None, shuffle=True, step=step, batch_size=batch_size)
+		min_index=300001, max_index=None, step=step, batch_size=batch_size)
 
 	val_steps = (300000 - 200001 - lookback) // batch_size	# 查看整个验证集，需要从val_gen中抽取多少次
 	test_steps = (len(float_data) - 300001 - lookback) // batch_size	# 
@@ -107,7 +107,7 @@ def evaluate_naive_method(val_gen, val_steps):
 	# MAE=0.29，温度数据被标准化成均值为0、标准差为1，所以无法直接对这个值进行解释。
 	# 它转化成温度的平均绝对误差为 0.29×temperature_std 摄氏度，即 2.57°C。std[1]是均方差  MAE=(温度-平均值)/均方差
 
-
+# 密集连接
 def dense_meatod(float_data, train_gen, val_gen, val_steps):
 	model = models.Sequential()
 	model.add(layers.Flatten(input_shape=( lookback//step, float_data.shape[-1] )))
@@ -131,7 +131,7 @@ def show2(t_loss,v_loss):
     plt.subplot(1,2,1)
     plt.plot(epochs, t_loss, 'b', label='t_loss')
     plt.plot(epochs, v_loss, 'r', label='v_loss')
-    plt.ylim([0,1])
+    plt.ylim([0.2,0.4])
     plt.title('loss')
     plt.legend()
     # plt.subplot(1,2,2)
@@ -148,7 +148,7 @@ if __name__ == '__main__':
 	float_data=getFloatData()
 	train_gen, val_gen, test_gen, val_steps, test_steps = getData(float_data)
 
-	# evaluate_naive_method(val_gen, val_steps)
+	evaluate_naive_method(val_gen, val_steps)
 	history = dense_meatod(float_data, train_gen, val_gen, val_steps)
 	t_loss=history.history['loss']
 	# t_acc=history.history['acc']
