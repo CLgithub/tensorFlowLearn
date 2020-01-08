@@ -11,7 +11,7 @@ from keras import models, layers, optimizers
 
 
 data_dir = './data'
-fname = os.path.join(data_dir, 'jena_climate_2009_2016.csv')
+fname = os.path.join(data_dir, 'jena_climate_2009_2016_mytest.csv')
 
 def getFloatData():
 	f = open(fname)
@@ -29,8 +29,10 @@ def getFloatData():
 		float_data[i, :]=values
 
 	mean = float_data[:200000].mean(axis=0)
+	# print('mean',mean[1])
 	float_data -= mean
 	std = float_data[:200000].std(axis=0)
+	# print('std',std[1])
 	float_data /= std
 	return float_data
 
@@ -95,83 +97,7 @@ def getData(float_data):
 
 	return train_gen, val_gen, test_gen, val_steps, test_steps
 
-####################################################
-# 采用gru层，比全连接层效果要好，但有过拟合
-def gru_meatod(float_data, train_gen, val_gen, val_steps):
-	model = models.Sequential()
-	model.add(layers.GRU(32, input_shape=(None, float_data.shape[-1])))		# GRU和LSTM原理相同，只是做了简化
-	model.add(layers.Dense(1))
 
-	model.compile(loss='mae', optimizer=optimizers.RMSprop())
-
-	history = model.fit_generator(
-		train_gen,	# 数据生产器
-		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
-		epochs=5,				# 训练轮次
-		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
-		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
-		)
-	model.save('model_6_3-3_gruMeatod.h5')  #保存模型
-	return history
-
-# 采用gru层+dropout解决过拟合，但出现性能不足，高级技巧1
-def gru_meatod_dropout(float_data, train_gen, val_gen, val_steps):
-	model = models.Sequential()
-	model.add(
-		layers.GRU(
-			32, input_shape=(None, float_data.shape[-1]), 
-			dropout=0.1, recurrent_dropout=0.1 	# dropout，指定该层输入单元的dropout比率，recurrent_dropout指定循环单元的dropout比率
-		)
-	)
-
-	model.add(layers.Dense(1))
-	model.compile(loss='mae', optimizer=optimizers.RMSprop())
-	history = model.fit_generator(
-		train_gen,	# 数据生产器
-		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
-		epochs=20,				# 训练轮次
-		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
-		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
-		)
-	return history
-
-# 采用gru层+dropout，并且采用堆叠循环层，处理性能不足，高级技巧2
-def gru_meatod_dropout_2(float_data, train_gen, val_gen, val_steps):
-	model = models.Sequential()
-	model.add(
-		layers.GRU(
-			32, input_shape=(None, float_data.shape[-1]), 
-			dropout=0.1, recurrent_dropout=0.3, 	# dropout，指定该层输入单元的dropout比率，recurrent_dropout指定循环单元的dropout比率
-			return_sequences=True
-		)
-	)
-	model.add(
-		layers.GRU(
-			32, input_shape=(None, float_data.shape[-1]), 
-			dropout=0.1, recurrent_dropout=0.3, 	# dropout，指定该层输入单元的dropout比率，recurrent_dropout指定循环单元的dropout比率
-			return_sequences=True
-		)
-	)
-	model.add(
-		layers.GRU(
-			64,
-			dropout=0.1, recurrent_dropout=0.3,
-			activation='relu'
-		)
-	)
-
-	model.add(layers.Dense(32))
-	model.add(layers.Dense(1))
-	model.compile(loss='mae', optimizer=optimizers.RMSprop())
-	history = model.fit_generator(
-		train_gen,	# 数据生产器
-		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
-		epochs=20,				# 训练轮次
-		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
-		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
-		)
-	return history
-####################################################
 
 def show2(t_loss,v_loss):
     epochs=range(1, len(t_loss)+1)
@@ -194,15 +120,35 @@ def show2(t_loss,v_loss):
 if __name__ == '__main__':
 
 	float_data=getFloatData()
-	train_gen, val_gen, test_gen, val_steps, test_steps = getData(float_data)
+	# train_gen, val_gen, test_gen, val_steps, test_steps = getData(float_data)
 
-	history = gru_meatod(float_data, train_gen, val_gen, val_steps)
-	# history = gru_meatod_dropout(float_data, train_gen, val_gen, val_steps)
-	# history = gru_meatod_dropout_2(float_data, train_gen, val_gen, val_steps)
-	t_loss=history.history['loss']
-	# t_acc=history.history['acc']
-	v_loss=history.history['val_loss']
-	# v_acc=history.history['val_acc']
-	show2(t_loss,v_loss)
+
+	lookback = 144	# 6*24*1 1天 输入数据应该包括过去
+	step = 6	# 
+	delay = 6		# 目标应该在未来多少个时间步之后 1 小时
+	batch_size = 1	# 每个批量的样本数
+	my_test_gen = generator(data=float_data, lookback=lookback, delay=delay, 
+		min_index=0, max_index=430, shuffle=False, step=step, batch_size=batch_size)
+
+	samples, targets=next(my_test_gen)
+	# samples_val, targets_val=next(val_gen)
+
+	print('掌握数据',samples[-1][-1][1]*2.190528998973049+-5.2666125290023205)	#输入数据的最后一条是：2009-01-01 23:10:00
+	print('目标',targets[-1]*2.190528998973049+-5.2666125290023205)	#2009-01-02 01:10:00 目标是1小时以后
+
+
+	model=models.load_model('model_6_3-3_gruMeatod.h5') #加载保存模型
+	mae=model.evaluate(samples, targets)	# 评估模型,mae,由于输入数据较少，误差很高
+	print(mae)
+
+	#预测3号的温度
+	predictions = model.predict(samples)
+	print(predictions.shape)
+	for p in predictions:
+		# pass
+	    print(p*2.190528998973049+-5.2666125290023205)	#预测温度
+
+
+	
 
 
