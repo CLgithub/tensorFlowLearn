@@ -98,7 +98,8 @@ from keras.layers import SimpleRNN
 ```
 与Numpy实现的RNN有个小区别：
 
-* **SimpleRNN**层能够像其他Keras层一样处理序列批量```
+* **SimpleRNN**层能够像其他Keras层一样处理序列批量
+```
 (batch_size, timesteps, input_features)
 ```
 
@@ -133,7 +134,9 @@ LSTM：long short-term memory，原理：它保存信息以便后面使用，从
 output_t = activation(dot(state_t, Uo) + dot(input_t, Wo) + dot(C_t, Vo) + bo)
 ```
 ```
-c_t+1 = i_t * k_t + c_t * f_t```![](./images/6.2-4.png)
+c_t+1 = i_t * k_t + c_t * f_t
+```
+![](./images/6.2-4.png)
 ### 6.2.3 Keras 中一个 LSTM 的具体例子
 [LSTM 用于IMDB电影影评分类问题](./book6_2-4.py)
 ![](./images/6.2-5.png)
