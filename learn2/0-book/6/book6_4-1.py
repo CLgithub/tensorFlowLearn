@@ -1,6 +1,6 @@
 # coding=utf-8
 
-# 使用keras中的循环神经网络，对IMDB电影评论进行处理  使用双向RNN，和book6.2-4.py的LSTM进行对比
+# 使用一维卷积神经网络处理IMDB情感分类问题
 
 from keras.datasets import imdb
 from keras.preprocessing import sequence
@@ -9,6 +9,7 @@ from keras import models
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
+from keras.optimizers import RMSprop
 import tensorflow as tf
 
 # 配置gpu训练时内存分配，应该单独学习gpu资源管理，合理分配gpu资源，才能更好的利用，tensorflow还没能在工具层处理这问题，所以才必须在代码中进行配置
@@ -34,13 +35,17 @@ test_x = sequence.pad_sequences(test_x, maxlen=maxlen)
 
 def getModel():
     model = models.Sequential()
-    model.add(layers.Embedding(max_features, 32))	# 嵌入层,序列向量字典(10000,32)
-    # model.add(layers.LSTM(A2))						# 单向RNN
-    model.add(layers.Bidirectional( layers.LSTM(32, dropout=0.2, recurrent_dropout=0.1) ))		# 双向RNN，并且对LSTM添加dropout，防止过拟合
-    # model.add(layers.Bidirectional( layers.LSTM(32) ))		# 双向RNN，并且对LSTM添加dropout，防止过拟合
+    model.add(layers.Embedding(max_features, 128, input_length=maxlen))   # 嵌入层,序列向量字典(10000,128)
+    model.add(layers.Conv1D(32, 7, activation='relu'))  # 添加一个1D卷积层，卷积窗口长度7，32个特征
+    model.add(layers.MaxPooling1D(5))                   # 添加一个1D池化层，池化窗口长度5
+    model.add(layers.Conv1D(32, 7, activation='relu')) 
+    model.add(layers.GlobalMaxPooling1D())              # 
+    # model.add(layers.Dropout(0.5))  # 增加一个dropout层，减小过拟合
+    # model.add(layers.Dense(10, activation='relu'))
+    # model.add(layers.Dense(1))
     model.add(layers.Dense(1, activation='sigmoid'))
 
-    model.compile(loss='binary_crossentropy', optimizer='rmsprop', metrics=['acc'] )
+    model.compile(loss='binary_crossentropy', optimizer=RMSprop(lr=1e-4), metrics=['acc'] )
 
     return model
 
@@ -48,8 +53,8 @@ def getModel():
 def run(model):
     history = model.fit(
         train_x,train_y,
-        epochs=10,
-        batch_size=32,
+        epochs=20,
+        batch_size=128,
         validation_split=0.2)
     return history
 
