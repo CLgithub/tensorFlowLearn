@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 data_dir = './data'
 fname = os.path.join(data_dir, 'jena_climate_2009_2016.csv')
 
+
+
 def getFloatData():
 	f = open(fname)
 	data = f.read()
@@ -25,9 +27,12 @@ def getFloatData():
 		float_data[i, :]=values
 
 	mean = float_data[:200000].mean(axis=0)
+	print('mean',mean[1])
 	float_data -= mean
 	std = float_data[:200000].std(axis=0)
+	print('std',std[1])
 	float_data /= std
+
 	return float_data
 
 # temp = float_data[:, 1]
@@ -61,7 +66,7 @@ def generator(data, lookback, delay, min_index, max_index,
 			rows = np.arange(i, i+batch_size)	# 取哪些
 			i += len(rows)
 
-		# print(rows) # 得到可以取哪些数据的索引序列，rows得到索引，取哪些p元素的索引
+		print(rows) # 得到可以取哪些数据的索引序列，rows得到索引，取哪些p元素的索引
 
 		samples = np.zeros((batch_size, lookback//step, data.shape[-1])) # (一次取多少,多少个时间点,每个数据的形状)
 		targets = np.zeros((batch_size, )) # 具体温度数据
@@ -71,13 +76,15 @@ def generator(data, lookback, delay, min_index, max_index,
 			samples[j] = data[indices]
 			targets[j] = data[row + delay][1]	# 有了第row行的数据，目标是delay步后的数据
 
-		# print(samples.shape,targets)
+		# print(samples.shape)
+		print(samples[:,:,1]*8.85249908220462+9.077348950000042)
+		# print(samples)
 
 def getData():
-	lookback = 2	# 6*24*10 10天 输入数据应该包括过去
+	lookback = 6	# 6*24*10 10天 输入数据应该包括过去
 	step = 6	# 
 	delay = 6		# 目标应该在未来多少个时间步之后 1天
-	batch_size = 8	# 每个批量的样本数
+	batch_size = 3	# 每个批量的样本数
 
 	float_data=getFloatData()
 
@@ -96,7 +103,7 @@ def getData():
 	# return train_gen, val_gen, test_gen, val_steps, test_steps
 
 	generator(data=float_data, lookback=lookback, delay=delay, 
-		min_index=0, max_index=20, shuffle=False, step=step, batch_size=batch_size)
+		min_index=0, max_index=20, shuffle=True, step=step, batch_size=batch_size)
 
 	# print(samples, targets)
 

@@ -29,10 +29,10 @@ def getFloatData():
 		float_data[i, :]=values
 
 	mean = float_data[:200000].mean(axis=0)
-	# print('mean',mean[1])
+	print('mean',mean[1])
 	float_data -= mean
 	std = float_data[:200000].std(axis=0)
-	# print('std',std[1])
+	print('std',std[1])
 	float_data /= std
 	return float_data
 
