@@ -82,7 +82,7 @@ batch_size = 128	# 每个批量的样本数
 def getData(float_data):
 	train_gen = generator(data=float_data, lookback=lookback, delay=delay, 
 		min_index=0, max_index=200000, shuffle=True, step=step, batch_size=batch_size)
-	# 不明白训练数据为何采用乱序，若不乱序，会出现性能不足，用乱序来训练，用非乱序来验证
+	# 此处shuffle=True是指批量之间的开始位置是随机的，抽取出来的一批次是顺序的，
 
 	val_gen = generator(data=float_data, lookback=lookback, delay=delay, 
 		min_index=200001, max_index=300000, shuffle=False, step=step, batch_size=batch_size)

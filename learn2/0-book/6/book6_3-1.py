@@ -27,13 +27,13 @@ def getFloatData():
 		float_data[i, :]=values
 
 	mean = float_data[:200000].mean(axis=0)
-	print('mean',mean[1])
+	# print('mean',mean[1])
 	float_data -= mean
 	std = float_data[:200000].std(axis=0)
-	print('std',std[1])
+	# print('std',std[1])
 	float_data /= std
 
-	return float_data
+	return float_data, mean, std
 
 # temp = float_data[:, 1]
 # plt.plot(range( 1440 ), temp[:1440])
@@ -49,7 +49,7 @@ def getFloatData():
 # shuffle:是打乱样本，还是按顺序抽取样本
 # batch_size:每个批量的样本数
 # step:数据采样的周期(单位:时间步)。我们将其设为 6，为的是每小时抽取一个数据点
-def generator(data, lookback, delay, min_index, max_index, 
+def generator(data, mean, std, lookback, delay, min_index, max_index, 
 	shuffle=False, batch_size=128, step=6):
 
 	if max_index is None:
@@ -77,16 +77,26 @@ def generator(data, lookback, delay, min_index, max_index,
 			targets[j] = data[row + delay][1]	# 有了第row行的数据，目标是delay步后的数据
 
 		# print(samples.shape)
-		print(samples[:,:,1]*8.85249908220462+9.077348950000042)
+		# print(samples[:,:,1]*8.85249908220462+9.077348950000042)
 		# print(samples)
+		for ai,a in enumerate(samples):
+			for bi,b in enumerate(a):
+				for ci,c in enumerate(b):
+					# print('std：', std[1], end='None')
+					print(round(c*std[ci]+mean[ci],2),end=', ')
+				print('')
+			print('')
+
+		for t in targets:
+			print(round(t*std[1]+mean[1],2))
 
 def getData():
-	lookback = 6	# 6*24*10 10天 输入数据应该包括过去
-	step = 6	# 
-	delay = 6		# 目标应该在未来多少个时间步之后 1天
-	batch_size = 3	# 每个批量的样本数
+	lookback = 3	# 6*24*10 10天 输入数据应该包括过去
+	step = 1		# 没多少步采样一次
+	delay = 0		# 目标应该在输入数据多少个时间步之后
+	batch_size = 2	# 每个批量的样本数
 
-	float_data=getFloatData()
+	float_data, mean, std=getFloatData()
 
 	# train_gen = generator(data=float_data, lookback=lookback, delay=delay, 
 	# 	min_index=0, max_index=200000, shuffle=True, step=step, batch_size=batch_size)
@@ -102,8 +112,8 @@ def getData():
 
 	# return train_gen, val_gen, test_gen, val_steps, test_steps
 
-	generator(data=float_data, lookback=lookback, delay=delay, 
-		min_index=0, max_index=20, shuffle=True, step=step, batch_size=batch_size)
+	generator(data=float_data, mean=mean, std=std, lookback=lookback, delay=delay, 
+		min_index=0, max_index=20, shuffle=False, step=step, batch_size=batch_size)
 
 	# print(samples, targets)
 
