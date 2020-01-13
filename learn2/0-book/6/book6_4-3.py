@@ -1,6 +1,6 @@
 # coding=utf-8
 
-# 一维卷积神经网络处理温度☁️预测问题，效果不好，证明卷积神经网络对时间步的顺序不敏感]
+# RNN结合CNN
 
 import os
 import numpy as np
@@ -76,7 +76,7 @@ def generator(data, lookback, delay, min_index, max_index,
 
 
 lookback = 1440	# 6*24*10 10天 输入数据应该包括过去
-step = 6	# 
+step = 3		# 采样间隔，增大采样密度
 delay = 144		# 目标应该在未来多少个时间步之后 1天
 batch_size = 128	# 每个批量的样本数
 def getData(float_data):
@@ -134,6 +134,27 @@ def conv1d_meatod(float_data, train_gen, val_gen, val_steps):
 		)
 	return history
 
+#cnn结合rnn，
+def cnn_rnn(float_data, train_gen, val_gen, val_steps):
+	model = models.Sequential()
+	model.add(layers.Conv1D(32, 5, activation='relu', input_shape=(None, float_data.shape[-1]) ))
+	model.add(layers.MaxPooling1D(3))
+	model.add(layers.Conv1D(32, 5, activation='relu' ))
+	model.add(layers.GRU(32, dropout=0.1, recurrent_dropout=0.5))
+	model.add(layers.Dense(1, activation='sigmoid'))
+
+	model.summary()
+	model.compile(loss='mae', optimizer=optimizers.RMSprop())
+
+	history = model.fit_generator(
+		train_gen,	# 数据生产器
+		steps_per_epoch=500,	# 每轮抽取多少批次的生成器的数据，每批次128，共200000，
+		epochs=20,				# 训练轮次
+		validation_data=val_gen,		# 验证集，可以是numpy数组组成的元祖，也可以是数据生成器
+		validation_steps=val_steps 		# 从验证集中抽取多少个批次用于评估
+		)
+	return history
+
 
 def show2(t_loss,v_loss):
     epochs=range(1, len(t_loss)+1)
@@ -159,8 +180,9 @@ if __name__ == '__main__':
 	train_gen, val_gen, test_gen, val_steps, test_steps = getData(float_data)
 
 	# history = gru_meatod(float_data, train_gen, val_gen, val_steps)
-	history = conv1d_meatod(float_data, train_gen, val_gen, val_steps)
-	
+	# history = conv1d_meatod(float_data, train_gen, val_gen, val_steps)
+	history = cnn_rnn(float_data, train_gen, val_gen, val_steps)
+
 	t_loss=history.history['loss']
 	v_loss=history.history['val_loss']
 	show2(t_loss,v_loss)
