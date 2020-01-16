@@ -24,3 +24,4 @@ y_train = np.random.random((1000, 10))
 
 api_model.fit(x_train, y_train, epochs=10, batch_size=128)
 score = api_model.evaluate(x_train, y_train)
+print(score)
