@@ -13,7 +13,7 @@ answer_vocabulary_size = 500		# 回答输出词库长度
 
 def getModel_api():
 	text_input = Input(shape=(None,), dtype='int32', name='text')	# 定义文本输入，一个长度可变的整数序列
-	embedded_text = layers.Embedding(text_vocabulary_size, 64)(text_input)	# 将文本输入嵌入到64维德向量中
+	embedded_text = layers.Embedding(text_vocabulary_size, 64)(text_input)	# 将文本输入嵌入到64维的向量中
 	text_tensor = layers.LSTM(32)(embedded_text)	# 利用LSTM将向量编码为单个向量
 
 	question_input = Input(shape=(None,), dtype='int32', name='question')	# 定义问题输入
