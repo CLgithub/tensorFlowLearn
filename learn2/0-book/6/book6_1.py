@@ -35,12 +35,15 @@ def oneHotW():
 def oneHotChar():
 	token_index = {}	# 构建数据中所有标记的索引
 	characters = string.printable	# 所有可打印的ASCII字符
-	token_index = dict( zip(range(0, len(characters)), characters) )	# 获取到数据中所有标记的索引
+	token_index = dict( zip(characters, range(0, len(characters)) ) )	# 获取到数据中所有标记的索引
+	# token_index = dict(zip(characters, range(1, len(characters) + 1)))
+	print(token_index)
 
 	max_length = 50 # 定义每个样例的长度，不足的补0，超过的不要	
 	results = np.zeros( shape=(len(samples), max_length, len(token_index)) )
+	# results = np.zeros((len(samples), max_length, max(token_index.values()) + 1))
 	for i, sample in enumerate(samples):
-		for j, char in enumerate(sample):
+		for j, char in enumerate(sample[:max_length]):
 			index=token_index.get(char)
 			results[i, j, index]=1
 	print(results)
@@ -78,8 +81,8 @@ def oneHotW_hashingTrick():
 
 
 # oneHotW()
-# oneHotChar()
-oneHotW_keras()
+oneHotChar()
+# oneHotW_keras()
 # oneHotW_hashingTrick()
 
 
