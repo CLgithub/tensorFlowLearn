@@ -68,6 +68,23 @@ Xception是极端的inception，Xception将分别进行通道特征学习与空�
 [将模型作为层](./book7_1-7.py)
 
 ### 7.1.7 小结
+* 可以用函数式API```model=models.Model([input1,input2,...],[outpu1,output2,...])```来构建模型
+* 多种形式：
+	* [多输入](./book7_1-2.py)
+	```
+	model = models.Model([i1, i2, i3, ...], output)
+	```
+	* [多输出](./book7_1-3.py)
+	```
+	model = models.Model(input, [o1, o2, o3, ...])
+	```
+	模型最后一层：激活要对应各自输出<br>
+	编译模型时：loss要对应各自输出，还要进行损失平衡loss_weights
+	* 有向无环图
+		* [inception模块](./book7_1-4.py)，分为多个分支，不同的侧重点，最后合并concatenate
+		* [残差连接](./book7_1-5.py)，将前几层的输出与后几层的输出add，解决**梯度消失**和**表示瓶颈**问题
+	* [共享层权重](./book7_1-6.py)，共同使用某一层
+	* [将模型作为层](./book7_1-7.py)，层既是模型，模型既是层
 
 
 ## 7.2 使用 Keras 回调函数和 TensorBoard 来检查并监控深度学习模型
