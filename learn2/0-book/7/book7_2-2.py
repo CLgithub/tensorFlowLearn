@@ -140,10 +140,6 @@ def getData():
 
 def getCallbackslist():
 	callbacks_list = [
-		keras.callbacks.EarlyStopping(	# 提前中断回调函数
-			monitor='acc',		# 中断判断指标acc，也可以是val_acc
-			patience=1,		# 中断条件：acc多于1轮没有改善，就中断训练
-		),
 		keras.callbacks.ModelCheckpoint(	# 检查点回调函数
 			filepath='my_model_7_2-1.h5',	# 保存文件名
 			monitor='val_loss',		# 如果val_loss没有改善，就不覆盖，
@@ -153,7 +149,6 @@ def getCallbackslist():
 			monitor='val_loss',		# 监控指标：val_loss
 			patience=10,			# 出发条件：监控指标在10轮内没有改进
 			factor=0.1,				# 出发事件：学习率变为原来的0.1倍
-			
 		)
 	]
 

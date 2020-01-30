@@ -111,6 +111,31 @@ keras.callbacks.CSVLogger
 ```
 #### 1.ModelCheckpoint 与 EarlyStopping 回调函数
 [ModelCheckpoint 与 EarlyStopping 回调函数示例](./book7_2-1.py)
+#### 2.ReduceLROnPlateau 回调函数
+如果验证损失不再改善，你可以使用这个回调函数来降低学习率
+[ReduceLROnPlateau 回调函数示例](./book7_2-2.py)
+#### 3.自定义回调函数
+自定义回调函数，继承`keras.callbacks.Callback`类即可
+
+继承`keras.callbacks.Callback`类需要实现如下方法：
+
+```
+on_epoch_begin	# 在每轮开始时被调用
+on_epoch_end	# 在每轮结束时被调用
+on_batch_begin	# 在处理每个批量之前被调用
+on_batch_end	# 在处理每个批量之后被调用
+on_train_begin	# 在训练开始时被调用
+on_train_end	# 在训练结束时被调用
+```
+
+回调函数还可以访问下列属性：
+
+```
+self.model				# 调用回调函数的模型实例
+self.validation_data	# 传入fit作为验证数据的值
+```
+[自定义回调函数示例](./book7_2-3.py)<br>
+[可参考](https://blog.csdn.net/qq_27825451/article/details/93377801)
 
 ### 7.2.2 TensorBoard 简介:TensorFlow的可视化框架
 ### 7.2.3 小结
