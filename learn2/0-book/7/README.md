@@ -89,6 +89,29 @@ Xception是极端的inception，Xception将分别进行通道特征学习与空�
 
 ## 7.2 使用 Keras 回调函数和 TensorBoard 来检查并监控深度学习模型
 ### 7.2.1 训练过程中将回调函数作用于模型
+使用回调函数的目的：使得训练可控<br>
+***回调函数*** ：callback是调用fit时传入模型的一个对象，它在训练过程中的不同时间点都会被调用<br>
+回调函数可以访问模型性能和状态，还能采取行动，中断训练、保存模型、加载一组不同的权重或改变模型的状态<br>
+
+一些用法：
+
+* **模型检查点(model checkpointing)**：在训练过程中的不同时间点保存模型的当前权重，```keras.callbacks.ModelCheckpoint```
+* **提前终止(early stopping)**：如果验证损失不再改善，则中断训练(当然，同时保存在训练过程中得到的最佳模型)```keras.callbacks.EarlyStopping```
+* **在训练过程中动态调节某些参数值**：比如优化器的学习率
+* **在训练过程中记录训练指标和验证指标，或将模型学到的表示可视化**：(这些表示也在不断更新)：你熟悉的 Keras 进度条就是一个回调函数!
+
+常用的：
+
+```
+keras.callbacks.ModelCheckpoint 
+keras.callbacks.EarlyStopping
+keras.callbacks.LearningRateScheduler
+keras.callbacks.ReduceLROnPlateau
+keras.callbacks.CSVLogger
+```
+#### 1.ModelCheckpoint 与 EarlyStopping 回调函数
+[ModelCheckpoint 与 EarlyStopping 回调函数示例](./book7_2-1.py)
+
 ### 7.2.2 TensorBoard 简介:TensorFlow的可视化框架
 ### 7.2.3 小结
 
