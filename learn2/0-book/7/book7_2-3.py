@@ -1,8 +1,6 @@
 #coding=utf-8
 
-'''
-"Deep learning with Python" 第2章第一节尝试
-'''
+# 自定义回调函数：在每轮结束后将模型每层的激活保存到硬盘
 
 import numpy as np
 from keras.datasets import fashion_mnist
