@@ -8,7 +8,7 @@
 
 ## 7.1 不用Sequential模型的解决方案
 ### Keras 函数式 API
-到目前为止，见过的神经网络都是用Sequential模型实现的，Sequential模型，假设网络只有一个输入和一个输出，而且网络是层的线性堆叠![](./images/7.1-1.png)
+到目前为止，见过的神经网络都是用Sequential模型实现的，Sequential模型，假设网络只有一个输入和一个输出，而且网络是层的线性堆叠<center>![](./images/7.1-1.png)</center>
 
 还有其他问题会用到多输入、多输出、有向无环图等等，就需要函数式**API(functional API)**
 
@@ -33,18 +33,18 @@ keras.layers.concatenate	# 用于合并多个分支
 输出：
 1. 回答
 
-![](./images/7.1-2.png)
+<center>![](./images/7.1-2.png)</center>
 [多输入模型，问答分类问题](./book7_1-2.py)
 
 ### 7.1.3 多输出模型
 比如一个网络，输入某个匿名人士的一系列社交媒体发帖，然后尝试预测那个人的属性，比如年龄、性别和收入水平
-![](./images/7.1-3.png)
+<center>![](./images/7.1-3.png)</center>
 [多输出问题](./book7_1-3.py)
 ### 7.1.4 层组成的有向无环图
 一些常用的神经网络组件都以图的形式实现，两个著名的组件：
 
 #### 1. Inception模块
-![](./images/7.1-4.png)
+<center>![](./images/7.1-4.png)</center>
 它是模块的堆叠，这些模块本身看起来像是小型的独立网络，被分为多个并行分支，最后将所得到的特征连接在一起<br>
 [Inception模块](./book7_1-4.py)<br>
 1x1卷积作用在意：区分通道特征学习和空间特征学习<br>
@@ -152,7 +152,12 @@ tensorBoard其实就是一个回调函数<br>
 运行完成，存储日志到相应目录，`tensorboard --logdir=my_log_dir_7_2-4`
 启动可视化服务，地址`http://localhost:6006/`
 
+还可以[使用plot_model函数显示模型结构](./book7_2-5.py)
+
+<center>![](./images/model_7_2-5.png)</center>
 ### 7.2.3 小结
+* Keras 回调函数提供了一种简单方法，可以在训练过程中监控模型并根据模型状态自动采取行动
+* 使用 TensorFlow 时，TensorBoard 是一种在浏览器中将模型活动可视化的好方法。在Keras 模型中你可以通过 TensorBoard 回调函数来使用这种方法
 
 ## 7.3 让模型性能发挥到极致
 ### 7.3.1 高级架构模式
