@@ -194,6 +194,20 @@ tensorBoard其实就是一个回调函数<br>
 	深度可分离卷积是Xception结构的基础
 
 ### 7.3.2 超参数优化
+**超参数**：用多少层，用什么层，所用层级的参数
+
+**模型参数**：模型内部权重
+
+这个过程的**关键**在于，给定许多组超参数，使用**验证性能的历史**来选择下一组需要评估的超参数的算法。有多种不同的技术可供选择:贝叶斯优化、遗传算法、简单随机搜索等
+
+**超参数自动化很关键但还不成熟**
+
+目前是随机搜索、Hyperopt（一个用于超参数优化的 Python 库）、Hyperas（将 Hyperopt 与 Keras 模型集成在一起）
+
+[一定要试试**Hyperas**](http://yangguang2009.github.io/2017/01/08/deeplearning/grid-search-hyperparameters-for-deep-learning/)
+
+[待完成](./book7_3-2.py)
+
 ### 7.3.3 模型集成
 ### 7.3.4 小结
 
