@@ -138,6 +138,20 @@ self.validation_data	# 传入fit作为验证数据的值
 [可参考](https://blog.csdn.net/qq_27825451/article/details/93377801)
 
 ### 7.2.2 TensorBoard 简介:TensorFlow的可视化框架
+tensorBoard具有下列巧妙功能：
+
+* 在训练过程中以可视化的方法监控指标
+* 将模型架构可视化
+* 将激活和梯度可视化
+* 以三维的形式研究嵌入
+
+tensorBoard其实就是一个回调函数<br>
+[使用tensorBoard可视化](./book7_2-4.py)<br>
+[keras版本问题](./关于tensorBoard使用bug问题.md)
+
+运行完成，存储日志到相应目录，`tensorboard --logdir=my_log_dir_7_2-4`
+启动可视化服务，地址`http://localhost:6006/`
+
 ### 7.2.3 小结
 
 ## 7.3 让模型性能发挥到极致
