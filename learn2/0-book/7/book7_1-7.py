@@ -35,4 +35,4 @@ def getModel_test():
 
 
 if __name__ == '__main__':
-	model = getModel()
+	model = getModel_test()
