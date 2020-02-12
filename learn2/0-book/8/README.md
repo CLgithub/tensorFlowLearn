@@ -63,6 +63,7 @@
 
 ## 8.2 DeepDream
 ### 8.2.1 用Keras实现DeepDream
+[用Keras实现DeepDream](./book8_2-1.py)
 ### 8.2.2 小结
 
 ## 8.3 神经风格迁移

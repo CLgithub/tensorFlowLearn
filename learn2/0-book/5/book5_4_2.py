@@ -51,12 +51,12 @@ def deprocess_image(x):
 	x = np.clip(x, 0, 255).astype('uint8')
 	return x
 
-def generate_pattern(layer_name, filter_index, size=150):
+def generate_pattern(layer_name, filter_index, input_img_data, size=150):
 	model = VGG16(  # 构建卷积基
-	        weights='imagenet', # 指定模型初始化的权重检查点
-	        include_top=False,  # 指定模型最后是否包含密集连接分类器
-	        input_shape=(size,size,3)
-	        )
+		weights='imagenet', # 指定模型初始化的权重检查点
+		include_top=False,  # 指定模型最后是否包含密集连接分类器
+		input_shape=(size,size,3)
+		)
 	# model = models.load_model('cats_and_dogs_small_5.2.h5')
 
 	# model.summary()
@@ -76,7 +76,7 @@ def generate_pattern(layer_name, filter_index, size=150):
 	iterate = backend.function([model.input], [loss, grads])	# iterate是一个函数，它将一个Numpy张量(model.input)转换为两个Numpy张量(loss,grads)组成的列表
 	loss_value, grads_value = iterate([np.zeros((1, size, size, 3))])	# zeros空白输入开始
 
-	input_img_data = np.random.random((1, size, size, 3)) * 20 +128.	# 从一张带有噪声的灰度图开始
+	
 	step = 1.
 	for i in range(40):	# 运行40次
 		loss_value, grads_value = iterate([input_img_data])
@@ -86,8 +86,23 @@ def generate_pattern(layer_name, filter_index, size=150):
 	return deprocess_image(img)
 
 def func1():
-	plt.imshow(generate_pattern('block3_conv1', 0))
+	input_img_data = np.random.random((1, size, size, 3)) * 20 +128.	# 从一张带有噪声的灰度图开始
+	plt.imshow(generate_pattern('block3_conv1', input_img_data, 0 ))
 	plt.show()
+
+def getImageData(img_path, size):
+	img_paths=[]
+	xs=[]
+	img_paths.append(img_path)
+	for img_path in img_paths:  #将图片转换成array
+	    img1 = image.load_img(img_path, target_size=(size,size))   # 读取图片并调整大小
+	    x1=image.img_to_array(img1) # 将其转换为形状(150,150,3)的numpy数组
+	    x1 /= 255   # 数据预处理
+	    xs.append(x1)
+	x=np.array(xs)
+
+	print(x.shape)
+	return x
 
 
 def func2():
@@ -95,11 +110,14 @@ def func2():
 	size = 64
 	margin = 5
 
+	input_img_data = np.random.random((1, size, size, 3)) * 20 +128.	# 从一张带有噪声的灰度图开始
+	# input_img_data = getImageData('./data/my_test11.png', size)
+
 	results = np.zeros((8*size+7*margin, 8*size+7*margin, 3))	# 空图像，用于保存结果
 
 	for r in range(8):	# 行
 		for c in range(8):	# 列
-			filter_img = generate_pattern(layer_name, c+(r*8), size=size)	# 行列依次投入进去得到响应
+			filter_img = generate_pattern(layer_name, c+(r*8), input_img_data, size=size )	# 行列依次投入进去得到响应
 			print(c+(r*8)+1)
 
 			r_start = r*size + r*margin		# 得到该图片行的开始位置
