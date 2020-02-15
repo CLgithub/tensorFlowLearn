@@ -89,7 +89,7 @@ octave_scale = 1	# 两个尺度之间的大小比例
 iterations = 40 	# 每个尺度上运行梯度上升的步数
 
 max_loss =20		# 如果损失增大到大于10，我们要中断梯度上升过程，以避免得到丑陋的伪影
-base_image_path = './data/deepDream4.jpg'
+base_image_path = './data/deepDream8.jpg'
 
 def run():
 	img_np = preprocess_image(base_image_path)		# 将基础图像加载成一个Numpy数组
