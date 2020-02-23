@@ -10,10 +10,10 @@ import time
 import imageio
 
 s_path='./data/style2/'
-target_img_path=s_path+'content.png'	# 原始图像路径
+originnal_img_path=s_path+'content.png'	# 原始图像路径
 style_reference_img_path = s_path+'style.png'		# 风格参考图像路径
 
-width, height = image.load_img(target_img_path).size
+width, height = image.load_img(originnal_img_path).size
 img_height = 400
 img_width = int(img_height/height * width)	# 等比放缩
 
@@ -78,7 +78,7 @@ def deprocess_image(x):
 # 运行梯度下降
 def getFetch_loss_and_grads():
 	# 1 构建模型
-	originnal_img = K.constant(preprocess_image(target_img_path))	#常数
+	originnal_img = K.constant(preprocess_image(originnal_img_path))	#常数
 	style_reference_img = K.constant(preprocess_image(style_reference_img_path))
 	generated_img = K.placeholder((1, img_height, img_width, 3))	# 占位符
 
@@ -101,8 +101,8 @@ def getFetch_loss_and_grads():
 
 	loss = K.variable(0.)
 	layer_features = outputs_dict[content_layer]
-	target_img_features = layer_features[0, :, :, :]	# 取第0个图像的激活	即 原始图像在该层的激活
-	combination_features = layer_features[2, :, :, :]	# 取第2个图像激活		即 生成图像在该层的激活
+	target_img_features = layer_features[0, :, :, :]	# 取第0个图像在内容层的激活		即 原始图像在该层的激活
+	combination_features = layer_features[2, :, :, :]	# 取第2个图像在内容层激活		即 生成图像在该层的激活
 	loss = loss + content_weight * content_loss(target_img_features, combination_features)	# 内容损失添加到总损失中
 
 	for layer_name in style_layers:
