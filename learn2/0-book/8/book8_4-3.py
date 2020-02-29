@@ -2,16 +2,53 @@
 
 from keras import Input, layers, models, metrics, backend as K
 from keras.datasets import mnist
-# from keras.preprocessing import image
+from keras.preprocessing import image
 from PIL import Image
 import numpy as np
 import tensorflow as tf
 import matplotlib.pyplot as plt
 from scipy.stats import norm
+from keras.preprocessing.image import ImageDataGenerator
 
-img_shape = (28, 28, 1)
+img_size = 80
+img_shape = (img_size, img_size, 3)
 batch_size = 16
 latent_dim = 2 		# 潜在空间的维度，一个二维平面
+
+
+train_dir='./data/cats_and_dogs_small/train/'   #训练
+validation_dir='./data/cats_and_dogs_small/validation/'
+
+# 利用卷积基进行数据预处理
+def cdate():
+    #数据预处理
+    train_datagen=ImageDataGenerator(
+        rescale=1./255,  #设置放缩比例
+        # rotation_range=40,
+        # width_shift_range=0.2,
+        # height_shift_range=0.2,
+        # shear_range=0.2,
+        # zoom_range=0.2,
+        # horizontal_flip=True,
+        # fill_mode='nearest'
+    )    
+    test_datagen=ImageDataGenerator(rescale=1./255) #不能增强验证数据
+
+    train_generator=train_datagen.flow_from_directory(  #构建python生成器,是一个类似迭代器的对象,从目录中读取图像数据并预处理
+        train_dir,  #目标目录
+        target_size=(img_size, img_size), #将所有图片的大小调整为150*150
+        batch_size=200,          #生成器每批次样本数量
+        class_mode='binary',     #因为使用了binary_crossentropy损失，所以需要用二进制标签
+        # color_mode='grayscale'
+        )
+    validation_generator=test_datagen.flow_from_directory(
+        validation_dir,
+        target_size=(img_size, img_size),
+        batch_size=200,
+        class_mode='binary',
+        # color_mode='grayscale'
+        )
+    return train_generator,validation_generator
 
 # 定义编码模型
 def enCoder(input_img):
@@ -54,9 +91,9 @@ def getDeCoder(z, shape_before_flattening):
 	)(decoder_input)
 	out = layers.Reshape(shape_before_flattening[1:])(out)	# 变形	(14, 14, 64)
 
-	# 该层是转置的卷积操作(反卷进)，data_format='channels_last'，将x反卷积为(28,28,32)
-	out = layers.Conv2DTranspose(32, 3, padding='same', activation='relu', strides=(2,2))(out) 	# (28, 28, 32) 2x+1=28 x=14
-	out = layers.Conv2D(1, 3, activation='sigmoid', padding='same')(out)	#(sampling, 28, 28, 1)
+	# 该层是转置的卷积操作(反卷进)，data_format='channels_last'，将x反卷积为(img_size,img_size,32)
+	out = layers.Conv2DTranspose(32, 3, padding='same', activation='relu', strides=(2,2))(out) 	# (img_size, img_size, 32) 2x+1=img_size x=14
+	out = layers.Conv2D(3, 3, activation='sigmoid', padding='same')(out)	#(sampling, img_size, img_size, 1)
 
 	m_deCoder = models.Model(decoder_input, out)
 	return m_deCoder
@@ -81,16 +118,27 @@ class MyLayer(layers.Layer):
 		return x 							# 该层有了损失，返回x，进行经过该层前后x变化的前后比较
 
 def run(vea_model):
-	(x_train, _), (x_test, y_test) = mnist.load_data()
-	train_x = x_train.astype('float32') / 255.
-	train_x = train_x.reshape(train_x.shape + (1,))
-	test_x = x_test.astype('float32') / 255.
-	test_x = test_x.reshape(test_x.shape + (1,))
+	# (x_train, _), (x_test, y_test) = mnist.load_data()
+	# train_x = x_train.astype('float32') / 255.
+	# train_x = train_x.reshape(train_x.shape + (1,))
+	# test_x = x_test.astype('float32') / 255.
+	# test_x = test_x.reshape(test_x.shape + (1,))
+	# history=vea_model.fit(
+	# 	x=train_x, y=None,
+	# 	shuffle=True,
+	# 	epochs=10,
+	# 	batch_size=batch_size, 
+	# 	validation_data=(test_x, None)
+	# )
+	# return history
 
+	train_generator, validation_generator=cdate()
+	train_x = next(train_generator)[0]
+	test_x = next(validation_generator)[0]
 	history=vea_model.fit(
 		x=train_x, y=None,
 		shuffle=True,
-		epochs=10,
+		epochs=200,
 		batch_size=batch_size, 
 		validation_data=(test_x, None)
 	)
@@ -98,9 +146,9 @@ def run(vea_model):
 
 # 显示潜入空间
 def displayVEA(m_deCoder):
-	n = 15
-	digit_size = 28
-	figure = np.zeros((digit_size * n, digit_size * n))	# 总图片
+	n = 10
+	digit_size = img_size
+	figure = np.zeros((digit_size * n, digit_size * n, 3))	# 总图片
 	grid_x = norm.ppf(np.linspace(0.05, 0.95, n))	# 在指定的间隔内返回均匀间隔的数字,
 	grid_y = norm.ppf(np.linspace(0.05, 0.95, n))	# norm.ppf()正态分布的累计分布函数的逆函数，即下分位点
 	# grid_x = np.linspace(0.05, 0.95, n)
@@ -109,32 +157,40 @@ def displayVEA(m_deCoder):
 	for i, yi in enumerate(grid_x):
 		for j, xi in enumerate(grid_y):
 			z_sample = np.array([[xi, yi]])	# (1,2)
-			z_sample = np.tile(z_sample, batch_size).reshape(batch_size, 2)	# 把 z_sample 沿着xi方向复制batch_size倍得到(1,32)，变形(16,2)，为了取16个，其实只取一个也行
-			x_decoded = m_deCoder.predict(z_sample,)	# 解码得到图片 (batch_size, 28, 28, 1)
-			digit = x_decoded[0].reshape(digit_size, digit_size)	# 指取第0个解码出的图片
+			# z_sample = np.tile(z_sample, batch_size).reshape(batch_size, 2)	# 把 z_sample 沿着xi方向复制batch_size倍得到(1,32)，变形(16,2)，为了取16个，其实只取一个也行
+			# print(z_sample.shape)
+			x_decoded = m_deCoder.predict(z_sample,)	# 解码得到图片 (batch_size, img_size, img_size, 1)
+			# print(x_decoded.shape)
+			digit = x_decoded[0].reshape(digit_size, digit_size, 3)	# 指取第0个解码出的图片
+			# print(digit.shape)
 			figure[i*digit_size: (i+1)*digit_size, j*digit_size: (j+1)*digit_size] = digit 	# 填入相应位置
 	
-	plt.figure(figsize=(10, 10))
-	plt.imshow(figure, cmap='Greys_r')
-	plt.show()
+	# image_path='./data/cats_and_dogs_small/validation/dogs/dog.1025.jpg'
+	# digit = Image.open(image_path)
+	# digit = digit.resize((img_size, img_size))
+	# figure[1*digit_size: (1+1)*digit_size, 1*digit_size: (1+1)*digit_size] = digit 
+	img1 = image.array_to_img(figure)
+	img1.show()
 
 def imgToImg(vea_model):
-	image_path='./data/6.png'
+	image_path='./data/cats_and_dogs_small/validation/dogs/dog.1025.jpg'
 
 	img = Image.open(image_path)
-	img = img.convert('L')
-	img = img.resize((28, 28))
+	# img = img.convert('L')
+	# print(img.shape)
+	img = img.resize((img_size, img_size))
 
 	img_array = np.array(img)
 	img_array = np.expand_dims(img_array, axis=0)
-	img_array = np.expand_dims(img_array, axis=3)
+	# img_array = np.expand_dims(img_array, axis=3)
 
 	i1 = vea_model.predict(img_array)
 	i1 = i1[0]
-	i1=np.array(i1).reshape(28,28)
-	print(i1.shape)
-	img1 = Image.fromarray(i1)
+	i1=np.array(i1).reshape(img_size,img_size,3)
+
+	img1 = image.array_to_img(i1)
 	img1.show()
+
 
 
 
@@ -174,8 +230,9 @@ if __name__ == '__main__':
 	#--------------------- 图片到图片 开始 ----------------------#
 	# vea_model=models.load_model('model_8_4-2_vea.h5')
 	# vea_model.summary()
-	imgToImg(vea_model)
+	# imgToImg(vea_model)
 	#--------------------- 图片到图片 结束 ----------------------#
+
 
 
 
