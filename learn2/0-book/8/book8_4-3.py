@@ -82,7 +82,7 @@ def sampling(args):
 
 # 定义解码器层
 def getDeCoder(z, shape_before_flattening):
-	decoder_input = layers.Input(K.int_shape(z)[1:])	# 去掉样本数维度(,2)
+	decoder_input = layers.Input(K.int_shape(z)[1:])	# 去掉样本数维度得到(2,)
 
 	# 相当于展平的反操作
 	out = layers.Dense(
