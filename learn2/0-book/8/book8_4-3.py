@@ -19,7 +19,7 @@ latent_dim = 2 		# 潜在空间的维度，一个二维平面
 train_dir='./data/cats_and_dogs_small/train/'   #训练
 validation_dir='./data/cats_and_dogs_small/validation/'
 
-# 利用卷积基进行数据预处理
+# 数据生成器，数据预处理
 def cdate():
     #数据预处理
     train_datagen=ImageDataGenerator(
