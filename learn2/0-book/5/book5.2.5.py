@@ -3,25 +3,29 @@
 # 猫🐱 狗🐶 图片分类器，数据增强，处理过拟合
 
 import os, shutil
-from keras import layers
-from keras import models
-from keras import optimizers
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras import layers
+from tensorflow.keras import models
+from tensorflow.keras import optimizers
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 import tensorflow as tf
 
-config = tf.ConfigProto(log_device_placement=False)    # 是否打印设备分配日志
-config.gpu_options.per_process_gpu_memory_fraction=0.5 # 设置每个gpu应该拿出多少容量给进程使用
-config.operation_timeout_in_ms=15000   # terminate on long hangs
-sess = tf.InteractiveSession("", config=config)
+# TensorFlow 2.x GPU配置
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    try:
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(e)
 
 original_dataset_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
-original_dataset_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
+original_dataset_dir='/Volumes/Lssd/develop/clProject/1-MachineLearn/tensorFlowLearn/data/dogs-vs-cats/train'   #原始数据集解压目录的路径
 base_dir='/home/ubuntu/develop/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
-base_dir='/Users/l/develop/clProject/tensorFlowLearn/learn2/0-book/5/data/cats_and_dogs_small'  #保存较小数据集的目录
-#os.mkdir(base_dir)
+base_dir='/Volumes/Lssd/develop/clProject/1-MachineLearn/tensorFlowLearn/data/cats_and_dogs_small'  #保存较小数据集的目录
+# os.mkdir(base_dir)
 train_dir=os.path.join(base_dir, 'train')   #训练
 validation_dir=os.path.join(base_dir, 'validation') #校验
 test_dir=os.path.join(base_dir, 'test') #测试
@@ -71,7 +75,7 @@ def copyData():
         dst = os.path.join(test_dogs_dir, fname)
         shutil.copyfile(src, dst)
 
-#copyData()
+# copyData()
 
 #搭建模型
 model=models.Sequential()
@@ -90,7 +94,7 @@ model.add(layers.Dense(1, activation='sigmoid'))
 print(model.summary())
 # 编译模型
 model.compile(loss='binary_crossentropy',
-            optimizer=optimizers.RMSprop(lr=1e-4),
+            optimizer=optimizers.RMSprop(learning_rate=1e-4),
             metrics=['acc']
         )
 
@@ -103,7 +107,7 @@ train_datagen=ImageDataGenerator(
     shear_range=0.2,
     zoom_range=0.2,
     horizontal_flip=True,
-)    
+)
 test_datagen=ImageDataGenerator(rescale=1./255) #不能增强验证数据
 
 train_generator=train_datagen.flow_from_directory(  #构建python生成器,是一个类似迭代器的对象,从目录中读取图像数据并预处理
@@ -119,7 +123,7 @@ validation_generator=test_datagen.flow_from_directory(
     class_mode='binary'
     )
 
-history=model.fit_generator(    #开始训练，fit_generator在数据生成器上的效果和fit相同
+history=model.fit(    #开始训练，TF2中直接使用fit即可处理数据生成器
     train_generator,      #数据生成器,可以不停的生成输入和目标组成的批量
     steps_per_epoch=100,    # 每一轮抽取多少批次的生成器生成的数据，本例中，每批量20，共2000，所以每轮抽取100个批次数据生成器的数据，轮训完一轮用完所有图片
     epochs=100,              # 轮训次数
